@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MathGenius/app/src/main/res/values-es/strings.xml -->
+<!-- String Resources - Spanish -->
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Genio Matemático</string>
+
+    <!-- Module Names -->
+    <string name="module_calculus">Cálculo</string>
+    <string name="module_calculus_desc">Cálculo diferencial e integral</string>
+    <string name="module_calculus_derivative">Calculadora de derivadas</string>
+    <string name="module_calculus_integral">Calculadora de integrales</string>
+
+    <!-- UI Labels -->
+    <string name="label_input_expression">Ingresar expresión</string>
+    <string name="label_result">Resultado</string>
+    <string name="label_steps">Pasos de cálculo</string>
+    <string name="label_result_placeholder">El resultado aparecerá aquí</string>
+    <string name="label_steps_placeholder">Los pasos aparecerán después del cálculo</string>
+
+    <!-- Buttons -->
+    <string name="btn_calculate">Calcular</string>
+    <string name="btn_clear">Borrar</string>
+    <string name="btn_copy">Copiar</string>
+
+    <!-- Hints -->
+    <string name="hint_enter_expression">ej: x^2 + 2*x + 1</string>
+
+    <!-- Errors -->
+    <string name="error_empty_expression">Por favor ingrese una expresión</string>
+    <string name="error_invalid_expression">Expresión inválida</string>
+    <string name="error_parse">Error de análisis</string>
+    <string name="error_calculation_failed">Cálculo fallido</string>
+    <string name="error_unknown">Ocurrió un error desconocido</string>
+
+    <!-- Derivative Rules -->
+    <string name="rule_constant">Regla de constante: d/dx(c) = 0</string>
+    <string name="rule_variable">Regla de variable: d/dx(x) = 1</string>
+    <string name="rule_power">Regla de potencia: d/dx(x^%1$s) = %1$s·x^(%1$s-1)</string>
+    <string name="rule_sum">Regla de suma: d/dx(f + g) = f\' + g\'</string>
+    <string name="rule_product">Regla del producto: d/dx(u·v) = u\'·v + u·v\'</string>
+    <string name="rule_quotient">Regla del cociente: d/dx(u/v) = (u\'·v - u·v\')/v²</string>
+    <string name="rule_chain">Regla de la cadena: d/dx(f(g(x))) = f\'(g(x))·g\'(x)</string>
+    <string name="rule_sin">Regla del seno: d/dx(sin(x)) = cos(x)</string>
+    <string name="rule_cos">Regla del coseno: d/dx(cos(x)) = -sin(x)</string>
+    <string name="rule_tan">Regla de la tangente: d/dx(tan(x)) = sec²(x)</string>
+    <string name="rule_ln">Regla del logaritmo: d/dx(ln(x)) = 1/x</string>
+    <string name="rule_exp">Regla exponencial: d/dx(e^x) = e^x</string>
+
+    <!-- Step Types -->
+    <string name="step_identify">Identificar</string>
+    <string name="step_apply_rule">Aplicar regla</string>
+    <string name="step_simplify">Simplificar</string>
+    <string name="step_result">Resultado</string>
+
+    <!-- Step Templates -->
+    <string name="step_apply_power_rule">Aplicar regla de potencia a %1$s</string>
+    <string name="step_apply_product_rule">Aplicar regla del producto:\nu = %1$s, v = %2$s\nu\' = %3$s, v\' = %4$s</string>
+    <string name="step_apply_chain_rule">Aplicar regla de la cadena:\nFunción externa: %1$s\nFunción interna: %2$s</string>
+    <string name="step_simplify_expression">Simplificar: %1$s → %2$s</string>
+</resources>

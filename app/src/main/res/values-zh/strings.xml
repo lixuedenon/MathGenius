@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- app/src/main/res/values-zh/strings.xml -->
+<!-- 中文字符串资源 -->
+<resources>
+    <string name="app_name">数学天才</string>
+
+    <!-- 模块相关 -->
+    <string name="select_module">选择模块</string>
+    <string name="module_icon">模块图标</string>
+    <string name="navigate">导航</string>
+    <string name="module_coming_soon">该模块即将推出！</string>
+
+    <string name="module_calculus">微积分</string>
+    <string name="module_calculus_desc">导数、积分、极限</string>
+
+    <string name="module_linear_algebra">线性代数</string>
+    <string name="module_linear_algebra_desc">矩阵、向量、特征值</string>
+
+    <string name="module_statistics">概率统计</string>
+    <string name="module_statistics_desc">概率、分布、假设检验</string>
+
+    <string name="module_diff_eq">微分方程</string>
+    <string name="module_diff_eq_desc">常微分方程、偏微分方程、解法</string>
+
+    <string name="module_discrete">离散数学</string>
+    <string name="module_discrete_desc">组合数学、图论、逻辑</string>
+
+    <!-- UI 相关 -->
+    <string name="input_expression">输入表达式</string>
+    <string name="hint_expression">例如：x^2 + 2*x + 1</string>
+    <string name="btn_calculate">计算导数</string>
+    <string name="result">结果</string>
+    <string name="steps">步骤</string>
+
+    <!-- 错误信息 -->
+    <string name="error_empty_input">请输入表达式</string>
+    <string name="error_calculation">计算错误</string>
+
+    <!-- 设置相关 -->
+    <string name="settings">设置</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_theme">主题</string>
+    <string name="settings_about">关于</string>
+
+    <string name="language_english">English (英语)</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_japanese">日本語 (日语)</string>
+    <string name="language_korean">한국어 (韩语)</string>
+    <string name="language_french">Français (法语)</string>
+    <string name="language_german">Deutsch (德语)</string>
+    <string name="language_spanish">Español (西班牙语)</string>
+
+    <string name="theme_light">亮色模式</string>
+    <string name="theme_dark">暗黑模式</string>
+    <string name="theme_eye_care">护眼模式</string>
+
+    <string name="app_version">版本 1.0.0</string>
+    <string name="app_description">一款综合性数学计算器，涵盖微积分、线性代数、统计学等多个领域。</string>
+
+    <!-- 步骤相关 -->
+    <string name="expand">展开</string>
+    <string name="collapse">折叠</string>
+
+    <string name="step_title_identify">识别</string>
+    <string name="step_title_apply_rule">应用规则</string>
+    <string name="step_title_simplify">化简</string>
+    <string name="step_title_result">结果</string>
+</resources>

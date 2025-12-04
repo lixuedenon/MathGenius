@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MathGenius/app/src/main/res/values-ja/strings.xml -->
+<!-- String Resources - Japanese -->
+<resources>
+    <!-- App Name -->
+    <string name="app_name">数学の天才</string>
+
+    <!-- Module Names -->
+    <string name="module_calculus">微積分</string>
+    <string name="module_calculus_desc">微分と積分の計算</string>
+    <string name="module_calculus_derivative">導関数計算機</string>
+    <string name="module_calculus_integral">積分計算機</string>
+
+    <!-- UI Labels -->
+    <string name="label_input_expression">式を入力</string>
+    <string name="label_result">結果</string>
+    <string name="label_steps">計算ステップ</string>
+    <string name="label_result_placeholder">結果がここに表示されます</string>
+    <string name="label_steps_placeholder">計算後にステップが表示されます</string>
+
+    <!-- Buttons -->
+    <string name="btn_calculate">計算</string>
+    <string name="btn_clear">クリア</string>
+    <string name="btn_copy">コピー</string>
+
+    <!-- Hints -->
+    <string name="hint_enter_expression">例：x^2 + 2*x + 1</string>
+
+    <!-- Errors -->
+    <string name="error_empty_expression">式を入力してください</string>
+    <string name="error_invalid_expression">無効な式です</string>
+    <string name="error_parse">解析エラー</string>
+    <string name="error_calculation_failed">計算に失敗しました</string>
+    <string name="error_unknown">不明なエラーが発生しました</string>
+
+    <!-- Derivative Rules -->
+    <string name="rule_constant">定数の微分：d/dx(c) = 0</string>
+    <string name="rule_variable">変数の微分：d/dx(x) = 1</string>
+    <string name="rule_power">べき乗の微分：d/dx(x^%1$s) = %1$s·x^(%1$s-1)</string>
+    <string name="rule_sum">和の微分：d/dx(f + g) = f\' + g\'</string>
+    <string name="rule_product">積の微分：d/dx(u·v) = u\'·v + u·v\'</string>
+    <string name="rule_quotient">商の微分：d/dx(u/v) = (u\'·v - u·v\')/v²</string>
+    <string name="rule_chain">合成関数の微分：d/dx(f(g(x))) = f\'(g(x))·g\'(x)</string>
+    <string name="rule_sin">正弦の微分：d/dx(sin(x)) = cos(x)</string>
+    <string name="rule_cos">余弦の微分：d/dx(cos(x)) = -sin(x)</string>
+    <string name="rule_tan">正接の微分：d/dx(tan(x)) = sec²(x)</string>
+    <string name="rule_ln">自然対数の微分：d/dx(ln(x)) = 1/x</string>
+    <string name="rule_exp">指数関数の微分：d/dx(e^x) = e^x</string>
+
+    <!-- Step Types -->
+    <string name="step_identify">識別</string>
+    <string name="step_apply_rule">規則を適用</string>
+    <string name="step_simplify">簡略化</string>
+    <string name="step_result">結果</string>
+
+    <!-- Step Templates -->
+    <string name="step_apply_power_rule">%1$s にべき乗の微分を適用</string>
+    <string name="step_apply_product_rule">積の微分を適用：\nu = %1$s、v = %2$s\nu\' = %3$s、v\' = %4$s</string>
+    <string name="step_apply_chain_rule">合成関数の微分を適用：\n外側の関数：%1$s\n内側の関数：%2$s</string>
+    <string name="step_simplify_expression">簡略化：%1$s → %2$s</string>
+</resources>

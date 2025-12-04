@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MathGenius/app/src/main/res/values-ko/strings.xml -->
+<!-- String Resources - Korean -->
+<resources>
+    <!-- App Name -->
+    <string name="app_name">수학 천재</string>
+
+    <!-- Module Names -->
+    <string name="module_calculus">미적분</string>
+    <string name="module_calculus_desc">미분 및 적분 계산</string>
+    <string name="module_calculus_derivative">도함수 계산기</string>
+    <string name="module_calculus_integral">적분 계산기</string>
+
+    <!-- UI Labels -->
+    <string name="label_input_expression">식 입력</string>
+    <string name="label_result">결과</string>
+    <string name="label_steps">계산 단계</string>
+    <string name="label_result_placeholder">결과가 여기에 표시됩니다</string>
+    <string name="label_steps_placeholder">계산 후 단계가 표시됩니다</string>
+
+    <!-- Buttons -->
+    <string name="btn_calculate">계산</string>
+    <string name="btn_clear">지우기</string>
+    <string name="btn_copy">복사</string>
+
+    <!-- Hints -->
+    <string name="hint_enter_expression">예: x^2 + 2*x + 1</string>
+
+    <!-- Errors -->
+    <string name="error_empty_expression">식을 입력하세요</string>
+    <string name="error_invalid_expression">유효하지 않은 식입니다</string>
+    <string name="error_parse">구문 분석 오류</string>
+    <string name="error_calculation_failed">계산 실패</string>
+    <string name="error_unknown">알 수 없는 오류가 발생했습니다</string>
+
+    <!-- Derivative Rules -->
+    <string name="rule_constant">상수 규칙: d/dx(c) = 0</string>
+    <string name="rule_variable">변수 규칙: d/dx(x) = 1</string>
+    <string name="rule_power">거듭제곱 규칙: d/dx(x^%1$s) = %1$s·x^(%1$s-1)</string>
+    <string name="rule_sum">합 규칙: d/dx(f + g) = f\' + g\'</string>
+    <string name="rule_product">곱셈 규칙: d/dx(u·v) = u\'·v + u·v\'</string>
+    <string name="rule_quotient">나눗셈 규칙: d/dx(u/v) = (u\'·v - u·v\')/v²</string>
+    <string name="rule_chain">연쇄 규칙: d/dx(f(g(x))) = f\'(g(x))·g\'(x)</string>
+    <string name="rule_sin">사인 규칙: d/dx(sin(x)) = cos(x)</string>
+    <string name="rule_cos">코사인 규칙: d/dx(cos(x)) = -sin(x)</string>
+    <string name="rule_tan">탄젠트 규칙: d/dx(tan(x)) = sec²(x)</string>
+    <string name="rule_ln">자연로그 규칙: d/dx(ln(x)) = 1/x</string>
+    <string name="rule_exp">지수 규칙: d/dx(e^x) = e^x</string>
+
+    <!-- Step Types -->
+    <string name="step_identify">식별</string>
+    <string name="step_apply_rule">규칙 적용</string>
+    <string name="step_simplify">단순화</string>
+    <string name="step_result">결과</string>
+
+    <!-- Step Templates -->
+    <string name="step_apply_power_rule">%1$s에 거듭제곱 규칙 적용</string>
+    <string name="step_apply_product_rule">곱셈 규칙 적용:\nu = %1$s, v = %2$s\nu\' = %3$s, v\' = %4$s</string>
+    <string name="step_apply_chain_rule">연쇄 규칙 적용:\n외부 함수: %1$s\n내부 함수: %2$s</string>
+    <string name="step_simplify_expression">단순화: %1$s → %2$s</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MathGenius/app/src/main/res/drawable/ic_launcher_foreground.xml -->
+<!-- Launcher Icon Foreground -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:translateX="27"
+        android:translateY="27">
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M30,20 L30,80 L35,80 L35,20 Z" />
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M40,45 L70,45 L70,50 L40,50 Z" />
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M45,20 Q55,30 65,20 L70,25 Q55,40 40,25 Z" />
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M45,55 L65,75 L70,70 L50,50 L70,30 L65,25 L45,45 Z" />
+    </group>
+</vector>
