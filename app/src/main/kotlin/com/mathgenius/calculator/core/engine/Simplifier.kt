@@ -328,8 +328,8 @@ class Simplifier {
      * 展开幂运算（仅支持小整数幂）
      */
     private fun expandPower(expr: Expr.Binary): Expr {
-        val base = expand(expr.base)
-        val exponent = expr.exponent
+        val base = expand(expr.left)
+        val exponent = expr.right
 
         // 只展开小整数幂
         if (exponent is Expr.Constant && exponent.value > 0 && exponent.value <= 5 && exponent.value == exponent.value.toInt().toDouble()) {

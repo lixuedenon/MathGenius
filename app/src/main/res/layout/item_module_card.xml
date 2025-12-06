@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/layout/item_module_card.xml -->
-<!-- 模块卡片布局 - 用于 RecyclerView 的单个模块项显示 -->
+<!-- Layout XML - Module Card Item for RecyclerView -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

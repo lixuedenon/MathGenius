@@ -36,7 +36,6 @@ class StepTracker {
      * @param templateKey 解释模板的资源 Key
      * @param params 模板参数
      * @param subSteps 子步骤列表
-     * @param note 额外注释
      */
     fun addStep(
         stepType: StepType,
@@ -45,11 +44,10 @@ class StepTracker {
         ruleName: String? = null,
         templateKey: String,
         params: Map<String, String> = emptyMap(),
-        subSteps: List<CalculationStep> = emptyList(),
-        note: String? = null
+        subSteps: List<CalculationStep> = emptyList()
     ) {
         currentStepNumber++
-        
+
         val step = CalculationStep(
             stepNumber = currentStepNumber,
             stepType = stepType,
@@ -59,8 +57,7 @@ class StepTracker {
             explanationTemplateKey = templateKey,
             templateParams = params,
             subSteps = subSteps,
-            level = currentLevel,
-            note = note
+            level = currentLevel
         )
         
         steps.add(step)

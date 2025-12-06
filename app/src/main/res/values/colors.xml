@@ -1,31 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values/colors.xml -->
-<!-- 颜色资源定义 -->
+<!-- XML Resource File - Color Definitions -->
 <resources>
-    <!-- 主色调 -->
+    <!-- Primary Colors -->
     <color name="primary">#6200EE</color>
     <color name="primary_dark">#3700B3</color>
+    <color name="primary_variant">#3700B3</color>
+
+    <!-- Secondary Colors -->
     <color name="secondary">#03DAC5</color>
     <color name="secondary_dark">#018786</color>
+    <color name="secondary_variant">#018786</color>
 
-    <!-- 背景色 -->
+    <!-- Background Colors - Light Mode -->
     <color name="background_light">#FFFFFF</color>
-    <color name="background_dark">#121212</color>
-    <color name="background_eye_care">#FFF8E1</color>
+    <color name="surface_light">#FFFFFF</color>
 
-    <!-- 文字颜色 -->
+    <!-- Background Colors - Dark Mode -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+
+    <!-- Background Colors - Eye Care Mode -->
+    <color name="background_eye_care">#FFF8E1</color>
+    <color name="background_eyecare">#FFF8E1</color>
+    <color name="surface_eyecare">#FFFBF0</color>
+
+    <!-- Base Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Text Colors - Light Mode -->
     <color name="text_primary_light">#000000</color>
     <color name="text_secondary_light">#757575</color>
+
+    <!-- Text Colors - Dark Mode -->
     <color name="text_primary_dark">#FFFFFF</color>
     <color name="text_secondary_dark">#B0B0B0</color>
 
-    <!-- 步骤类型颜色 -->
-    <color name="step_identify">#E3F2FD</color>
-    <color name="step_apply_rule">#E8F5E9</color>
-    <color name="step_simplify">#FFF8E1</color>
-    <color name="step_result">#E8EAF6</color>
+    <!-- Step Type Colors -->
+    <color name="step_identify">#6200EE</color>
+    <color name="step_apply_rule">#03DAC5</color>
+    <color name="step_simplify">#FF6F00</color>
+    <color name="step_result">#4CAF50</color>
 
-    <!-- 模块颜色 -->
+    <!-- Module Colors -->
     <color name="module_calculus">#9C27B0</color>
     <color name="module_linear_algebra">#3F51B5</color>
     <color name="module_statistics">#009688</color>

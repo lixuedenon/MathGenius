@@ -1,4 +1,4 @@
-// MathGenius/app/build.gradle.kts
+// app/build.gradle.kts
 // Application-level build configuration
 
 plugins {
@@ -51,7 +51,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
+        viewBinding = false
         buildConfig = true
     }
 

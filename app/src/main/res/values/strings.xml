@@ -65,4 +65,18 @@
     <string name="step_title_apply_rule">Apply Rule</string>
     <string name="step_title_simplify">Simplify</string>
     <string name="step_title_result">Result</string>
+
+    <!-- 按钮 -->
+    <string name="btn_clear">Clear</string>
+    <string name="btn_copy">Copy</string>
+
+    <!-- 错误信息 -->
+    <string name="error_calculation_failed">Calculation failed</string>
+    <string name="error_empty_expression">Please enter an expression</string>
+    <string name="error_invalid_expression">Invalid expression</string>
+    <string name="error_parse">Parse error</string>
+    <string name="error_unknown">Unknown error</string>
+
+    <!-- 提示 -->
+    <string name="hint_enter_expression">Enter expression</string>
 </resources>

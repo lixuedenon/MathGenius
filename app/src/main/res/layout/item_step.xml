@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/layout/item_step.xml -->
-<!-- 步骤项布局 - 用于 RecyclerView 显示单个计算步骤 -->
+<!-- Layout XML - Calculation Step Item for RecyclerView -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
