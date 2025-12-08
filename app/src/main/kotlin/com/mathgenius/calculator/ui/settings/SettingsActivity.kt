@@ -3,6 +3,7 @@ package com.mathgenius.calculator.ui.settings
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.mathgenius.calculator.R
@@ -20,6 +21,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var radioGroupTheme: RadioGroup
 
     companion object {
+        private const val TAG = "SettingsActivity"
         private const val PREFS_NAME = "MathGeniusPrefs"
         private const val KEY_THEME = "theme"
 
@@ -29,6 +31,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 在 setContentView 之前应用主题
+        applyTheme()
+
         super.onCreate(savedInstanceState)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -36,11 +41,27 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_settings)
 
+        Log.d(TAG, "=== SettingsActivity onCreate ===")
+
         languageManager = LanguageManager(this)
 
         initializeViews()
         loadCurrentSettings()
         setupListeners()
+    }
+
+    /**
+     * 应用主题
+     * 必须在 setContentView 之前调用
+     */
+    private fun applyTheme() {
+        val currentTheme = loadThemePreference()
+        when (currentTheme) {
+            THEME_LIGHT -> setTheme(R.style.Theme_MathGenius_Light)
+            THEME_DARK -> setTheme(R.style.Theme_MathGenius_Dark)
+            THEME_EYE_CARE -> setTheme(R.style.Theme_MathGenius_EyeCare)
+        }
+        Log.d(TAG, "Applied theme: $currentTheme")
     }
 
     /**
@@ -56,6 +77,7 @@ class SettingsActivity : AppCompatActivity() {
      * 从 SharedPreferences 读取并应用到 UI
      */
     private fun loadCurrentSettings() {
+        // 加载语言设置
         val currentLanguage = LanguageManager.loadLanguagePreference(this)
         val languageRadioId = when (currentLanguage) {
             Language.ENGLISH -> R.id.radio_english
@@ -68,6 +90,9 @@ class SettingsActivity : AppCompatActivity() {
         }
         radioGroupLanguage.check(languageRadioId)
 
+        Log.d(TAG, "Loaded language: $currentLanguage")
+
+        // 加载主题设置
         val currentTheme = loadThemePreference()
         val themeRadioId = when (currentTheme) {
             THEME_LIGHT -> R.id.radio_light
@@ -76,12 +101,15 @@ class SettingsActivity : AppCompatActivity() {
             else -> R.id.radio_light
         }
         radioGroupTheme.check(themeRadioId)
+
+        Log.d(TAG, "Loaded theme: $currentTheme")
     }
 
     /**
      * 设置事件监听器
      */
     private fun setupListeners() {
+        // 语言切换监听
         radioGroupLanguage.setOnCheckedChangeListener { _, checkedId ->
             val language = when (checkedId) {
                 R.id.radio_english -> Language.ENGLISH
@@ -94,11 +122,19 @@ class SettingsActivity : AppCompatActivity() {
                 else -> Language.ENGLISH
             }
 
+            Log.d(TAG, "Language changed to: $language")
+
+            // 保存语言设置
             LanguageManager.saveLanguagePreference(this, language)
+
+            // 更新 LanguageManager
             languageManager.setLanguage(language)
+
+            // 重新创建 Activity 以应用新语言
             recreate()
         }
 
+        // 主题切换监听
         radioGroupTheme.setOnCheckedChangeListener { _, checkedId ->
             val theme = when (checkedId) {
                 R.id.radio_light -> THEME_LIGHT
@@ -107,8 +143,12 @@ class SettingsActivity : AppCompatActivity() {
                 else -> THEME_LIGHT
             }
 
+            Log.d(TAG, "Theme changed to: $theme")
+
+            // 保存主题设置
             saveThemePreference(theme)
-            applyTheme(theme)
+
+            // 重新创建 Activity 以应用新主题
             recreate()
         }
     }
@@ -131,19 +171,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun saveThemePreference(theme: String) {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_THEME, theme).apply()
-    }
-
-    /**
-     * 应用主题
-     *
-     * @param theme 主题字符串
-     */
-    private fun applyTheme(theme: String) {
-        when (theme) {
-            THEME_LIGHT -> setTheme(R.style.Theme_MathGenius_Light)
-            THEME_DARK -> setTheme(R.style.Theme_MathGenius_Dark)
-            THEME_EYE_CARE -> setTheme(R.style.Theme_MathGenius_EyeCare)
-        }
+        Log.d(TAG, "Theme preference saved: $theme")
     }
 
     /**

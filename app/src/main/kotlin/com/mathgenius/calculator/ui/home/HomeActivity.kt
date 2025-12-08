@@ -46,7 +46,13 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 应用保存的主题
+        applyTheme()
+
         setContentView(R.layout.activity_home)
+
+        Log.d(TAG, "=== HomeActivity onCreate ===")
 
         initializeComponents()
         initializeViews()
@@ -54,26 +60,57 @@ class HomeActivity : AppCompatActivity() {
         setupListeners()
         setupSettingsButton()
         testDerivativeEngine()
+
+        Log.d(TAG, "=== HomeActivity onCreate Complete ===")
+    }
+
+    /**
+     * 应用主题
+     */
+    private fun applyTheme() {
+        val prefs = getSharedPreferences("MathGeniusPrefs", MODE_PRIVATE)
+        val theme = prefs.getString("theme", "light") ?: "light"
+
+        when (theme) {
+            "light" -> setTheme(R.style.Theme_MathGenius_Light)
+            "dark" -> setTheme(R.style.Theme_MathGenius_Dark)
+            "eye_care" -> setTheme(R.style.Theme_MathGenius_EyeCare)
+        }
+
+        Log.d(TAG, "Applied theme: $theme")
     }
 
     /**
      * 初始化核心组件
      */
     private fun initializeComponents() {
+        Log.d(TAG, "Initializing components...")
+
         languageManager = LanguageManager(this)
         derivativeEngine = DerivativeEngine(languageManager)
+
+        Log.d(TAG, "Current language: ${languageManager.getCurrentLanguage()}")
     }
 
     /**
      * 初始化视图组件
      */
     private fun initializeViews() {
-        recyclerModules = findViewById(R.id.recycler_modules)
-        editInput = findViewById(R.id.edit_input)
-        btnCalculate = findViewById(R.id.btn_calculate)
-        txtResult = findViewById(R.id.txt_result)
-        recyclerSteps = findViewById(R.id.recycler_steps)
-        scrollView = findViewById(R.id.scroll_view)
+        Log.d(TAG, "Initializing views...")
+
+        try {
+            recyclerModules = findViewById(R.id.recycler_modules)
+            editInput = findViewById(R.id.edit_input)
+            btnCalculate = findViewById(R.id.btn_calculate)
+            txtResult = findViewById(R.id.txt_result)
+            recyclerSteps = findViewById(R.id.recycler_steps)
+            scrollView = findViewById(R.id.scroll_view)
+
+            Log.d(TAG, "All views initialized successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error initializing views", e)
+            Toast.makeText(this, "Error initializing UI: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     /**
@@ -81,6 +118,8 @@ class HomeActivity : AppCompatActivity() {
      * 定义所有数学模块并配置 RecyclerView
      */
     private fun setupModuleList() {
+        Log.d(TAG, "Setting up module list...")
+
         val modules = listOf(
             ModuleData(
                 id = "calculus",
@@ -130,17 +169,24 @@ class HomeActivity : AppCompatActivity() {
 
         recyclerModules.adapter = moduleAdapter
         recyclerModules.layoutManager = LinearLayoutManager(this)
+
+        Log.d(TAG, "Module list setup complete")
     }
 
     /**
      * 处理模块点击事件
-     * 
+     *
      * @param module 被点击的模块数据
      */
     private fun handleModuleClick(module: ModuleData) {
+        Log.d(TAG, "Module clicked: ${module.id}")
+
         when (module.id) {
             "calculus" -> {
-                scrollView.smoothScrollTo(0, 0)
+                Log.d(TAG, "Scrolling to input area")
+                scrollView.post {
+                    scrollView.smoothScrollTo(0, editInput.top)
+                }
                 editInput.requestFocus()
             }
             else -> {
@@ -157,9 +203,14 @@ class HomeActivity : AppCompatActivity() {
      * 设置事件监听器
      */
     private fun setupListeners() {
+        Log.d(TAG, "Setting up listeners...")
+
         btnCalculate.setOnClickListener {
+            Log.d(TAG, "Calculate button clicked!")
             calculateDerivative()
         }
+
+        Log.d(TAG, "Listeners setup complete")
     }
 
     /**
@@ -168,6 +219,7 @@ class HomeActivity : AppCompatActivity() {
      */
     private fun setupSettingsButton() {
         findViewById<ImageButton>(R.id.btn_settings)?.setOnClickListener {
+            Log.d(TAG, "Settings button clicked")
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
@@ -180,31 +232,50 @@ class HomeActivity : AppCompatActivity() {
     private fun calculateDerivative() {
         val input = editInput.text.toString().trim()
 
+        Log.d(TAG, "=== Calculate Derivative ===")
+        Log.d(TAG, "Input: '$input'")
+
         if (input.isEmpty()) {
-            Toast.makeText(this, R.string.error_empty_input, Toast.LENGTH_SHORT).show()
+            val errorMsg = languageManager.getString("error_empty_input")
+            Log.w(TAG, "Empty input, showing error: $errorMsg")
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
+            Log.d(TAG, "Calling derivative engine...")
             val result = derivativeEngine.compute(input)
 
-            txtResult.text = buildString {
-                append(languageManager.getString("result"))
-                append(": ")
-                append(result.formattedResult)
+            Log.d(TAG, "Calculation result:")
+            Log.d(TAG, "  - Success: ${result.success}")
+            Log.d(TAG, "  - Result: ${result.formattedResult}")
+            Log.d(TAG, "  - Steps: ${result.steps.size}")
+
+            if (result.success) {
+                // 显示结果
+                val resultLabel = languageManager.getString("result")
+                val resultText = "$resultLabel: ${result.formattedResult}"
+                txtResult.text = resultText
+
+                Log.d(TAG, "Result text set to: $resultText")
+
+                // 显示步骤
+                currentSteps = result.steps
+                displaySteps(result.steps)
+
+                Log.d(TAG, "Calculation successful: ${result.formattedResult}")
+            } else {
+                // 显示错误
+                val errorMsg = result.errorMessage ?: "Unknown error"
+                Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                Log.e(TAG, "Calculation failed: $errorMsg")
             }
 
-            currentSteps = result.steps
-            displaySteps(result.steps)
-
-            Log.d(TAG, "Calculation successful: ${result.formattedResult}")
-
         } catch (e: Exception) {
-            Toast.makeText(
-                this,
-                "${languageManager.getString("error_calculation")}: ${e.message}",
-                Toast.LENGTH_LONG
-            ).show()
+            val errorLabel = languageManager.getString("error_calculation")
+            val errorMsg = "$errorLabel: ${e.message}"
+
+            Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
             Log.e(TAG, "Calculation error", e)
         }
     }
@@ -212,17 +283,22 @@ class HomeActivity : AppCompatActivity() {
     /**
      * 显示计算步骤
      * 使用 RecyclerView 和 StepsAdapter 显示步骤列表
-     * 
+     *
      * @param steps 计算步骤列表
      */
     private fun displaySteps(steps: List<CalculationStep>) {
+        Log.d(TAG, "Displaying ${steps.size} steps")
+
         if (steps.isNotEmpty()) {
             val adapter = StepsAdapter(steps, languageManager)
             recyclerSteps.adapter = adapter
             recyclerSteps.layoutManager = LinearLayoutManager(this)
             recyclerSteps.visibility = View.VISIBLE
+
+            Log.d(TAG, "Steps displayed successfully")
         } else {
             recyclerSteps.visibility = View.GONE
+            Log.d(TAG, "No steps to display")
         }
     }
 
@@ -257,5 +333,10 @@ class HomeActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "=== Test Complete ===")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume - Current language: ${languageManager.getCurrentLanguage()}")
     }
 }
