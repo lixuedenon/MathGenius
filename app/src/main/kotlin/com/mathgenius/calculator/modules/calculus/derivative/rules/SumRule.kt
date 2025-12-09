@@ -24,7 +24,6 @@ class SumRule : Rule {
     override val priority: Int = 40
 
     override fun canApply(expr: Expr, varName: String): Boolean {
-        // (f + g) 或 (f - g) 形式
         return expr is Expr.Binary &&
                (expr.op == BinaryOp.ADD || expr.op == BinaryOp.SUBTRACT)
     }
@@ -34,11 +33,9 @@ class SumRule : Rule {
         val left = binary.left
         val right = binary.right
 
-        // 递归求导
         val leftDerivative = applyDerivative(left, varName)
         val rightDerivative = applyDerivative(right, varName)
 
-        // f' op g' (保持原运算符)
         return Expr.Binary(
             leftDerivative,
             binary.op,
@@ -48,23 +45,19 @@ class SumRule : Rule {
 
     /**
      * 辅助方法：对子表达式求导
-     * 这里需要递归调用其他规则
      */
     private fun applyDerivative(expr: Expr, varName: String): Expr {
-        // 这里暂时使用简单的递归逻辑
-        // 实际应该通过 DerivativeEngine 的 differentiate 方法
-        // 为了避免循环依赖，这里先做简化处理
-
         return when (expr) {
             is Expr.Constant -> Expr.Constant(0.0)
+
             is Expr.Variable -> {
                 if (expr.name == varName) Expr.Constant(1.0)
                 else Expr.Constant(0.0)
             }
+
             is Expr.Binary -> {
                 when (expr.op) {
                     BinaryOp.POWER -> {
-                        // 简单幂法则
                         if (expr.left is Expr.Variable &&
                             (expr.left as Expr.Variable).name == varName) {
                             val n = expr.right
@@ -78,6 +71,30 @@ class SumRule : Rule {
                             Expr.Constant(0.0)
                         }
                     }
+
+                    BinaryOp.MULTIPLY -> {
+                        val left = expr.left
+                        val right = expr.right
+
+                        if (!left.contains(varName) && right.contains(varName)) {
+                            Expr.Binary(
+                                left,
+                                BinaryOp.MULTIPLY,
+                                applyDerivative(right, varName)
+                            )
+                        } else if (left.contains(varName) && !right.contains(varName)) {
+                            Expr.Binary(
+                                right,
+                                BinaryOp.MULTIPLY,
+                                applyDerivative(left, varName)
+                            )
+                        } else if (!left.contains(varName) && !right.contains(varName)) {
+                            Expr.Constant(0.0)
+                        } else {
+                            expr
+                        }
+                    }
+
                     BinaryOp.ADD, BinaryOp.SUBTRACT -> {
                         Expr.Binary(
                             applyDerivative(expr.left, varName),
@@ -85,9 +102,11 @@ class SumRule : Rule {
                             applyDerivative(expr.right, varName)
                         )
                     }
-                    else -> expr // 暂不处理其他情况
+
+                    else -> expr
                 }
             }
+
             else -> expr
         }
     }

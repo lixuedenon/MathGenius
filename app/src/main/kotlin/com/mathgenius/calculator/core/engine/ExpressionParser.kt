@@ -1,74 +1,50 @@
 // app/src/main/kotlin/com/mathgenius/calculator/core/engine/ExpressionParser.kt
-// Kotlin Source File
+// Enhanced Expression Parser with Implicit Multiplication Support
 
 package com.mathgenius.calculator.core.engine
 
 import kotlin.math.pow
 
 /**
- * 表达式解析器
+ * 表达式解析器 (增强版)
  * 使用递归下降算法将字符串解析为表达式树
- * 支持运算符：+, -, *, /, ^
- * 支持函数：sin, cos, tan, ln, log, exp, sqrt, abs
- * 支持括号和负号
+ * 支持隐式乘法: 2x → 2*x, 2(x+1) → 2*(x+1)
  */
 class ExpressionParser {
 
-    /**
-     * Token 类型
-     */
     private enum class TokenType {
-        NUMBER,         // 数字
-        VARIABLE,       // 变量
-        OPERATOR,       // 运算符
-        FUNCTION,       // 函数
-        LEFT_PAREN,     // 左括号
-        RIGHT_PAREN,    // 右括号
-        EOF             // 结束符
+        NUMBER, VARIABLE, OPERATOR, FUNCTION, LEFT_PAREN, RIGHT_PAREN, EOF
     }
 
-    /**
-     * Token 数据类
-     */
     private data class Token(
         val type: TokenType,
         val value: String,
         val position: Int
     )
 
-    /**
-     * 当前解析的 Token 列表
-     */
     private var tokens = listOf<Token>()
-
-    /**
-     * 当前 Token 索引
-     */
     private var currentIndex = 0
 
-    /**
-     * 当前 Token
-     */
     private val currentToken: Token
         get() = if (currentIndex < tokens.size) tokens[currentIndex] else Token(TokenType.EOF, "", -1)
 
     /**
      * 解析表达式字符串
-     *
-     * @param input 输入字符串，例如 "x^2 + 2*x + 1"
-     * @return 表达式树
-     * @throws ParseException 如果解析失败
+     * 自动处理隐式乘法
      */
     fun parse(input: String): Expr {
         try {
-            // 1. 词法分析
-            tokens = tokenize(input)
+            // 1. 预处理: 添加隐式乘号
+            val preprocessed = preprocessImplicitMultiplication(input)
+
+            // 2. 词法分析
+            tokens = tokenize(preprocessed)
             currentIndex = 0
 
-            // 2. 语法分析
+            // 3. 语法分析
             val expr = parseExpression()
 
-            // 3. 检查是否还有未解析的 Token
+            // 4. 检查是否还有未解析的 Token
             if (currentToken.type != TokenType.EOF) {
                 throw ParseException("Unexpected token: ${currentToken.value} at position ${currentToken.position}")
             }
@@ -77,6 +53,69 @@ class ExpressionParser {
         } catch (e: Exception) {
             throw ParseException("Failed to parse expression: ${e.message}", e)
         }
+    }
+
+    /**
+     * 预处理: 自动添加隐式乘号
+     *
+     * 规则:
+     * 1. 数字后跟变量: 2x → 2*x
+     * 2. 数字后跟左括号: 2(x+1) → 2*(x+1)
+     * 3. 右括号后跟数字: (x+1)2 → (x+1)*2
+     * 4. 右括号后跟变量: (x+1)y → (x+1)*y
+     * 5. 右括号后跟左括号: (x+1)(x+2) → (x+1)*(x+2)
+     * 6. 变量后跟左括号: x(x+1) → x*(x+1)
+     */
+    private fun preprocessImplicitMultiplication(input: String): String {
+        val result = StringBuilder()
+        var i = 0
+
+        while (i < input.length) {
+            val current = input[i]
+            result.append(current)
+
+            // 查看下一个非空白字符
+            var j = i + 1
+            while (j < input.length && input[j].isWhitespace()) {
+                result.append(input[j])
+                j++
+            }
+
+            if (j < input.length) {
+                val next = input[j]
+
+                // 判断是否需要插入乘号
+                val needsMultiply = when {
+                    // 规则 1: 数字后跟字母 (2x → 2*x)
+                    current.isDigit() && next.isLetter() -> true
+
+                    // 规则 2: 数字后跟左括号 (2( → 2*()
+                    current.isDigit() && next == '(' -> true
+
+                    // 规则 3: 右括号后跟数字 () 2 → ()*2)
+                    current == ')' && next.isDigit() -> true
+
+                    // 规则 4: 右括号后跟字母 () x → ()*x)
+                    current == ')' && next.isLetter() -> true
+
+                    // 规则 5: 右括号后跟左括号 ()( → ()*(()
+                    current == ')' && next == '(' -> true
+
+                    // 规则 6: 字母后跟左括号 (x( → x*()
+                    current.isLetter() && next == '(' -> true
+
+                    else -> false
+                }
+
+                if (needsMultiply) {
+                    result.append('*')
+                }
+            }
+
+            i++
+        }
+
+        return result.toString()
     }
 
     /**
@@ -158,7 +197,6 @@ class ExpressionParser {
 
     /**
      * 解析表达式（入口）
-     * 处理最低优先级的运算：加法和减法
      */
     private fun parseExpression(): Expr {
         return parseAdditive()
@@ -166,7 +204,6 @@ class ExpressionParser {
 
     /**
      * 解析加法和减法（优先级 1）
-     * expression = term (('+' | '-') term)*
      */
     private fun parseAdditive(): Expr {
         var left = parseMultiplicative()
@@ -188,7 +225,6 @@ class ExpressionParser {
 
     /**
      * 解析乘法和除法（优先级 2）
-     * term = factor (('*' | '/') factor)*
      */
     private fun parseMultiplicative(): Expr {
         var left = parsePower()
@@ -210,8 +246,6 @@ class ExpressionParser {
 
     /**
      * 解析幂运算（优先级 3）
-     * power = unary ('^' unary)*
-     * 注意：幂运算是右结合的，例如 2^3^4 = 2^(3^4)
      */
     private fun parsePower(): Expr {
         var left = parseUnary()
@@ -227,7 +261,6 @@ class ExpressionParser {
 
     /**
      * 解析一元运算（优先级 4）
-     * unary = '-' unary | function '(' expression ')' | primary
      */
     private fun parseUnary(): Expr {
         // 处理负号
@@ -269,7 +302,6 @@ class ExpressionParser {
 
     /**
      * 解析基本元素（优先级最高）
-     * primary = number | variable | '(' expression ')'
      */
     private fun parsePrimary(): Expr {
         return when (currentToken.type) {

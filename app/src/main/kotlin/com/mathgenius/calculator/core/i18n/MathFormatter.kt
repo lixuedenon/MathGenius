@@ -1,5 +1,5 @@
 // app/src/main/kotlin/com/mathgenius/calculator/core/i18n/MathFormatter.kt
-// Kotlin Source File
+// Enhanced Math Formatter with Unicode Superscript Support
 
 package com.mathgenius.calculator.core.i18n
 
@@ -11,9 +11,9 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 /**
- * 数学公式格式化器
+ * 数学公式格式化器 (增强版)
  * 将表达式树转换为可读的字符串表示
- * 支持多种格式：文本、LaTeX、HTML
+ * 支持 Unicode 上标和智能省略乘号
  */
 class MathFormatter {
 
@@ -25,6 +25,15 @@ class MathFormatter {
         LATEX,      // LaTeX 格式
         HTML        // HTML 格式
     }
+
+    /**
+     * Unicode 上标映射表 (0-9)
+     */
+    private val superscriptMap = mapOf(
+        '0' to '⁰', '1' to '¹', '2' to '²', '3' to '³', '4' to '⁴',
+        '5' to '⁵', '6' to '⁶', '7' to '⁷', '8' to '⁸', '9' to '⁹',
+        '-' to '⁻', '+' to '⁺', '.' to '·'
+    )
 
     /**
      * 数字格式化器
@@ -47,7 +56,7 @@ class MathFormatter {
     }
 
     /**
-     * 格式化为纯文本
+     * 格式化为纯文本 (带 Unicode 上标)
      */
     private fun formatText(expr: Expr, parentOp: BinaryOp? = null): String {
         return when (expr) {
@@ -64,15 +73,36 @@ class MathFormatter {
     private fun formatBinaryText(expr: Expr.Binary, parentOp: BinaryOp?): String {
         val left = formatText(expr.left, expr.op)
         val right = formatText(expr.right, expr.op)
-        val opSymbol = expr.op.symbol
 
         val result = when (expr.op) {
-            BinaryOp.POWER -> "$left^$right"
-            else -> "$left $opSymbol $right"
+            BinaryOp.POWER -> {
+                // 使用 Unicode 上标
+                val base = if (needsParentheses(expr.left, expr.op)) {
+                    "($left)"
+                } else {
+                    left
+                }
+                val exponent = toSuperscript(right)
+                "$base$exponent"
+            }
+            BinaryOp.MULTIPLY -> {
+                // 智能省略乘号
+                if (shouldOmitMultiplySign(expr.left, expr.right)) {
+                    "$left$right"
+                } else {
+                    "$left × $right"  // 使用 × 符号更清晰
+                }
+            }
+            BinaryOp.DIVIDE -> {
+                "$left / $right"
+            }
+            else -> {
+                "$left ${expr.op.symbol} $right"
+            }
         }
 
         // 判断是否需要括号
-        return if (needsParentheses(expr.op, parentOp)) {
+        return if (needsParenthesesForParent(expr.op, parentOp)) {
             "($result)"
         } else {
             result
@@ -85,9 +115,90 @@ class MathFormatter {
     private fun formatUnaryText(expr: Expr.Unary): String {
         val operand = formatText(expr.operand)
         return when (expr.op) {
-            UnaryOp.NEGATE -> "-$operand"
+            UnaryOp.NEGATE -> {
+                // 如果操作数需要括号
+                if (expr.operand is Expr.Binary &&
+                    (expr.operand.op == BinaryOp.ADD || expr.operand.op == BinaryOp.SUBTRACT)) {
+                    "-($operand)"
+                } else {
+                    "-$operand"
+                }
+            }
             else -> "${expr.op.symbol}($operand)"
         }
+    }
+
+    /**
+     * 将字符串转换为 Unicode 上标
+     * 只转换 0-9 的数字,其他字符保持原样
+     */
+    private fun toSuperscript(text: String): String {
+        // 检查是否只包含 0-9 和 -
+        if (text.all { it.isDigit() || it == '-' || it == '.' }) {
+            return text.map { superscriptMap[it] ?: it }.joinToString("")
+        }
+        // 如果包含其他字符,保持原样并用括号包裹
+        return "^($text)"
+    }
+
+    /**
+     * 判断是否应该省略乘号
+     */
+    private fun shouldOmitMultiplySign(left: Expr, right: Expr): Boolean {
+        // 情况 1: 数字 * 变量 (2 * x → 2x)
+        if (left is Expr.Constant && right is Expr.Variable) {
+            return true
+        }
+
+        // 情况 2: 数字 * (任意表达式) (2 * (x+1) → 2(x+1))
+        if (left is Expr.Constant && right is Expr.Binary) {
+            return true
+        }
+
+        // 情况 3: 数字 * 函数 (2 * sin(x) → 2sin(x))
+        if (left is Expr.Constant && right is Expr.Unary) {
+            return true
+        }
+
+        // 情况 4: 变量 * 变量 (x * y → xy)
+        if (left is Expr.Variable && right is Expr.Variable) {
+            return true
+        }
+
+        // 情况 5: (表达式) * 变量 ((x+1) * y → (x+1)y)
+        if (left is Expr.Binary && right is Expr.Variable) {
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * 判断表达式是否需要括号 (基于子表达式类型)
+     */
+    private fun needsParentheses(expr: Expr, currentOp: BinaryOp): Boolean {
+        return when (expr) {
+            is Expr.Binary -> {
+                // 加减法在乘除幂中需要括号
+                when (currentOp) {
+                    BinaryOp.MULTIPLY, BinaryOp.DIVIDE, BinaryOp.POWER -> {
+                        expr.op == BinaryOp.ADD || expr.op == BinaryOp.SUBTRACT
+                    }
+                    else -> false
+                }
+            }
+            else -> false
+        }
+    }
+
+    /**
+     * 判断是否需要括号 (基于父运算符)
+     */
+    private fun needsParenthesesForParent(currentOp: BinaryOp, parentOp: BinaryOp?): Boolean {
+        if (parentOp == null) return false
+
+        // 当前运算符优先级低于父运算符时需要括号
+        return currentOp.precedence < parentOp.precedence
     }
 
     /**
@@ -113,8 +224,7 @@ class MathFormatter {
             BinaryOp.ADD -> "$left + $right"
             BinaryOp.SUBTRACT -> "$left - $right"
             BinaryOp.MULTIPLY -> {
-                // 智能乘号省略
-                if (shouldOmitMultiply(expr.left, expr.right)) {
+                if (shouldOmitMultiplySign(expr.left, expr.right)) {
                     "$left$right"
                 } else {
                     "$left \\cdot $right"
@@ -164,6 +274,13 @@ class MathFormatter {
         return when (expr.op) {
             BinaryOp.POWER -> "$left<sup>$right</sup>"
             BinaryOp.DIVIDE -> "<div class='fraction'><span class='numerator'>$left</span><span class='denominator'>$right</span></div>"
+            BinaryOp.MULTIPLY -> {
+                if (shouldOmitMultiplySign(expr.left, expr.right)) {
+                    "$left$right"
+                } else {
+                    "$left × $right"
+                }
+            }
             else -> "$left ${expr.op.symbol} $right"
         }
     }
@@ -184,28 +301,11 @@ class MathFormatter {
      * 格式化数字
      */
     private fun formatNumber(value: Double): String {
-        // 如果是整数，不显示小数点
+        // 如果是整数,不显示小数点
         return if (value == value.toInt().toDouble()) {
             value.toInt().toString()
         } else {
             decimalFormat.format(value)
         }
-    }
-
-    /**
-     * 判断是否需要括号
-     */
-    private fun needsParentheses(currentOp: BinaryOp, parentOp: BinaryOp?): Boolean {
-        if (parentOp == null) return false
-        return currentOp.precedence < parentOp.precedence
-    }
-
-    /**
-     * 判断是否可以省略乘号
-     * 例如：2*x 可以写成 2x，但 x*y 不能省略
-     */
-    private fun shouldOmitMultiply(left: Expr, right: Expr): Boolean {
-        return (left is Expr.Constant && right is Expr.Variable) ||
-               (left is Expr.Constant && right is Expr.Binary)
     }
 }

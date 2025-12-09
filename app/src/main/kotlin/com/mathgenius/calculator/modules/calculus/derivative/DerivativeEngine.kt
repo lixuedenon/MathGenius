@@ -9,6 +9,7 @@ import com.mathgenius.calculator.core.rules.RuleRegistry
 import com.mathgenius.calculator.core.i18n.LanguageManager
 import com.mathgenius.calculator.core.i18n.MathFormatter
 import com.mathgenius.calculator.modules.calculus.derivative.rules.*
+import android.util.Log
 
 /**
  * 微分引擎
@@ -18,6 +19,10 @@ class DerivativeEngine(
     private val languageManager: LanguageManager,
     private val formatter: MathFormatter = MathFormatter()
 ) : MathEngine {
+
+    companion object {
+        private const val TAG = "DerivativeEngine"
+    }
 
     /**
      * 规则注册中心
@@ -40,41 +45,49 @@ class DerivativeEngine(
     private val simplifier = Simplifier()
 
     init {
-        // 注册所有微分规则（按优先级排序）
+        Log.d(TAG, "=== Initializing DerivativeEngine ===")
         registerDerivativeRules()
+        Log.d(TAG, "Registered ${ruleRegistry.getAllRules().size} rules")
     }
 
     /**
      * 注册微分规则
      */
     private fun registerDerivativeRules() {
+        Log.d(TAG, "Registering derivative rules...")
+
         ruleRegistry.registerAll(listOf(
-            ConstantRule(),           // 常数规则
-            VariableRule(),           // 变量规则
-            PowerRule(),              // 幂法则
-            SumRule(),                // 和差法则
-            ProductRule(),            // 乘积法则
-            QuotientRule(),           // 商法则
-            ChainRule(),              // 链式法则
-            SinRule(),                // sin 导数
-            CosRule(),                // cos 导数
-            TanRule(),                // tan 导数
-            LnRule(),                 // ln 导数
-            ExpRule()                 // exp 导数
+            ConstantRule(),           // 优先级 10 - 常数规则
+            VariableRule(),           // 优先级 20 - 变量规则
+            PowerRule(),              // 优先级 30 - 幂法则
+            ConstantMultipleRule(),   // 优先级 35 - 常数倍法则 (新增!)
+            SumRule(),                // 优先级 40 - 和差法则
+            ProductRule(),            // 优先级 50 - 乘积法则
+            QuotientRule(),           // 优先级 60 - 商法则
+            ChainRule(),              // 优先级 70 - 链式法则
+            SinRule(),                // 优先级 80 - sin 导数
+            CosRule(),                // 优先级 81 - cos 导数
+            TanRule(),                // 优先级 82 - tan 导数
+            LnRule(),                 // 优先级 83 - ln 导数
+            ExpRule()                 // 优先级 84 - exp 导数
         ))
+
+        Log.d(TAG, "Rules registered successfully")
     }
 
     override fun compute(input: String): ComputationResult {
         val startTime = System.currentTimeMillis()
 
+        Log.d(TAG, "=== compute() called ===")
+        Log.d(TAG, "Input: '$input'")
+
         try {
-            // 1. 清空步骤追踪器
             stepTracker.clear()
 
-            // 2. 解析输入表达式
+            Log.d(TAG, "Parsing expression...")
             val expr = parser.parse(input)
+            Log.d(TAG, "Parsed expression: $expr")
 
-            // 3. 记录初始步骤
             stepTracker.addSimpleStep(
                 stepType = StepType.IDENTIFY,
                 expr = expr,
@@ -82,13 +95,14 @@ class DerivativeEngine(
                 params = mapOf("function" to formatter.format(expr))
             )
 
-            // 4. 计算导数（默认对 x 求导）
+            Log.d(TAG, "Computing derivative...")
             val derivative = differentiate(expr, "x")
+            Log.d(TAG, "Derivative: $derivative")
 
-            // 5. 化简结果
+            Log.d(TAG, "Simplifying...")
             val simplified = simplifier.simplify(derivative)
+            Log.d(TAG, "Simplified: $simplified")
 
-            // 6. 记录最终结果
             stepTracker.addStep(
                 stepType = StepType.RESULT,
                 exprBefore = derivative,
@@ -97,19 +111,24 @@ class DerivativeEngine(
                 params = mapOf("result" to formatter.format(simplified))
             )
 
-            // 7. 计算耗时
             val elapsedTime = System.currentTimeMillis() - startTime
+            val formattedResult = formatter.format(simplified)
 
-            // 8. 返回结果
+            Log.d(TAG, "Formatted result: $formattedResult")
+            Log.d(TAG, "Computation time: ${elapsedTime}ms")
+            Log.d(TAG, "=== compute() success ===")
+
             return ComputationResult(
                 result = simplified,
                 steps = stepTracker.getSteps(),
-                formattedResult = formatter.format(simplified),
+                formattedResult = formattedResult,
                 success = true,
                 computationTimeMs = elapsedTime
             )
 
         } catch (e: Exception) {
+            Log.e(TAG, "=== compute() failed ===", e)
+            Log.e(TAG, "Error message: ${e.message}")
             return ComputationResult.failure("计算失败: ${e.message}")
         }
     }
@@ -122,17 +141,22 @@ class DerivativeEngine(
      * @return 导数表达式
      */
     private fun differentiate(expr: Expr, varName: String): Expr {
-        // 查找适用的规则
+        Log.d(TAG, "  differentiate() - expr: $expr, varName: $varName")
+
         val rule = ruleRegistry.findApplicableRule(expr, varName)
-            ?: throw IllegalStateException("No applicable rule found for expression: $expr")
 
-        // 应用规则前的表达式
+        if (rule == null) {
+            Log.e(TAG, "  No applicable rule found for: $expr")
+            throw IllegalStateException("No applicable rule found for expression: $expr")
+        }
+
+        Log.d(TAG, "  Applying rule: ${rule.name} (priority: ${rule.priority})")
+
         val exprBefore = expr
-
-        // 应用规则
         val result = rule.apply(expr, varName)
 
-        // 记录步骤
+        Log.d(TAG, "  Result after rule: $result")
+
         stepTracker.addStep(
             stepType = StepType.APPLY_RULE,
             exprBefore = exprBefore,
@@ -158,7 +182,7 @@ class DerivativeEngine(
     override fun validateInput(input: String): String? {
         return try {
             parser.parse(input)
-            null // 验证成功
+            null
         } catch (e: ParseException) {
             e.message
         } catch (e: Exception) {
