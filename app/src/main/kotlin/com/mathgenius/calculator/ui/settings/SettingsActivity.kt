@@ -1,4 +1,8 @@
 // app/src/main/kotlin/com/mathgenius/calculator/ui/settings/SettingsActivity.kt
+// 设置页面 Activity - 真正的最终修复版本
+// 修改日期: 2025-12-09
+// 修改方案: 使用 savedInstanceState 保存设置变化标志,确保 recreate() 后保持
+
 package com.mathgenius.calculator.ui.settings
 
 import android.content.Context
@@ -20,10 +24,24 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var radioGroupLanguage: RadioGroup
     private lateinit var radioGroupTheme: RadioGroup
 
+    // ===== 修改开始: 添加标志变量 =====
+    // 修改日期: 2025-12-09
+    // 修改原因: 跟踪设置是否改变
+    // 修改内容: 添加 settingsChanged 标志变量
+    private var settingsChanged = false
+    // ===== 修改结束: 添加标志变量 =====
+
     companion object {
         private const val TAG = "SettingsActivity"
         private const val PREFS_NAME = "MathGeniusPrefs"
         private const val KEY_THEME = "theme"
+
+        // ===== 修改开始: 添加状态保存键 =====
+        // 修改日期: 2025-12-09
+        // 修改原因: 保存设置变化标志到 savedInstanceState
+        // 修改内容: 添加 KEY_SETTINGS_CHANGED 常量
+        private const val KEY_SETTINGS_CHANGED = "settings_changed"
+        // ===== 修改结束: 添加状态保存键 =====
 
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"
@@ -35,6 +53,16 @@ class SettingsActivity : AppCompatActivity() {
         applyTheme()
 
         super.onCreate(savedInstanceState)
+
+        // ===== 修改开始: 恢复设置变化标志 =====
+        // 修改日期: 2025-12-09
+        // 修改原因: 从 savedInstanceState 恢复标志,确保 recreate() 后保持
+        // 修改内容: 如果有保存的状态,恢复 settingsChanged
+        if (savedInstanceState != null) {
+            settingsChanged = savedInstanceState.getBoolean(KEY_SETTINGS_CHANGED, false)
+            Log.d(TAG, "Restored settingsChanged from savedInstanceState: $settingsChanged")
+        }
+        // ===== 修改结束: 恢复设置变化标志 =====
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.settings)
@@ -109,7 +137,10 @@ class SettingsActivity : AppCompatActivity() {
      * 设置事件监听器
      */
     private fun setupListeners() {
-        // 语言切换监听
+        // ===== 修改开始: 语言切换监听器 =====
+        // 修改日期: 2025-12-09
+        // 修改原因: 标记设置已更改
+        // 修改内容: 设置 settingsChanged = true
         radioGroupLanguage.setOnCheckedChangeListener { _, checkedId ->
             val language = when (checkedId) {
                 R.id.radio_english -> Language.ENGLISH
@@ -130,11 +161,19 @@ class SettingsActivity : AppCompatActivity() {
             // 更新 LanguageManager
             languageManager.setLanguage(language)
 
-            // 重新创建 Activity 以应用新语言
+            // *** 修改: 标记设置已更改 ***
+            settingsChanged = true
+            Log.d(TAG, "Settings changed flag set to true")
+
+            // 重新创建当前 Activity 以应用新语言
             recreate()
         }
+        // ===== 修改结束: 语言切换监听器 =====
 
-        // 主题切换监听
+        // ===== 修改开始: 主题切换监听器 =====
+        // 修改日期: 2025-12-09
+        // 修改原因: 标记设置已更改
+        // 修改内容: 设置 settingsChanged = true
         radioGroupTheme.setOnCheckedChangeListener { _, checkedId ->
             val theme = when (checkedId) {
                 R.id.radio_light -> THEME_LIGHT
@@ -148,9 +187,14 @@ class SettingsActivity : AppCompatActivity() {
             // 保存主题设置
             saveThemePreference(theme)
 
-            // 重新创建 Activity 以应用新主题
+            // *** 修改: 标记设置已更改 ***
+            settingsChanged = true
+            Log.d(TAG, "Settings changed flag set to true")
+
+            // 重新创建当前 Activity 以应用新主题
             recreate()
         }
+        // ===== 修改结束: 主题切换监听器 =====
     }
 
     /**
@@ -173,6 +217,40 @@ class SettingsActivity : AppCompatActivity() {
         prefs.edit().putString(KEY_THEME, theme).apply()
         Log.d(TAG, "Theme preference saved: $theme")
     }
+
+    // ===== 修改开始: 保存设置变化标志 =====
+    // 修改日期: 2025-12-09
+    // 修改原因: 保存标志到 savedInstanceState,确保 recreate() 后保持
+    // 修改内容: 新增 onSaveInstanceState() 方法
+    /**
+     * 保存实例状态
+     * 在 recreate() 时保存设置变化标志
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_SETTINGS_CHANGED, settingsChanged)
+        Log.d(TAG, "Saved settingsChanged to outState: $settingsChanged")
+    }
+    // ===== 修改结束: 保存设置变化标志 =====
+
+    // ===== 修改开始: 在 finish 时设置返回结果 =====
+    // 修改日期: 2025-12-09
+    // 修改原因: 在 Activity 结束时根据标志设置返回结果
+    // 修改内容: 重写 finish() 方法
+    /**
+     * Activity 结束时设置返回结果
+     */
+    override fun finish() {
+        if (settingsChanged) {
+            Log.d(TAG, "finish(): Settings changed, setting result to RESULT_OK")
+            setResult(RESULT_OK)
+        } else {
+            Log.d(TAG, "finish(): Settings not changed, setting result to RESULT_CANCELED")
+            setResult(RESULT_CANCELED)
+        }
+        super.finish()
+    }
+    // ===== 修改结束: 在 finish 时设置返回结果 =====
 
     /**
      * 处理返回按钮点击

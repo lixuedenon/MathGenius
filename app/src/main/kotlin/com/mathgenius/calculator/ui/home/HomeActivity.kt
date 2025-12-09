@@ -1,4 +1,11 @@
 // app/src/main/kotlin/com/mathgenius/calculator/ui/home/HomeActivity.kt
+// 主界面 Activity - 已修复设置切换不生效问题
+// 修改日期: 2025-12-09
+// 修改内容:
+//   1. 添加 REQUEST_CODE_SETTINGS 常量
+//   2. 修改 setupSettingsButton() 使用 startActivityForResult
+//   3. 添加 onActivityResult() 方法监听设置变化并重新创建 Activity
+
 package com.mathgenius.calculator.ui.home
 
 import android.content.Intent
@@ -29,7 +36,7 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var languageManager: LanguageManager
     private lateinit var derivativeEngine: DerivativeEngine
-    
+
     private lateinit var recyclerModules: RecyclerView
     private lateinit var moduleAdapter: ModuleAdapter
     private lateinit var editInput: EditText
@@ -37,11 +44,18 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var txtResult: TextView
     private lateinit var recyclerSteps: RecyclerView
     private lateinit var scrollView: ScrollView
-    
+
     private var currentSteps: List<CalculationStep> = emptyList()
 
     companion object {
         private const val TAG = "HomeActivity"
+
+        // ===== 修改开始: 添加请求码常量 =====
+        // 修改日期: 2025-12-09
+        // 修改原因: 需要识别从 SettingsActivity 返回的结果
+        // 修改内容: 添加 REQUEST_CODE_SETTINGS 常量
+        private const val REQUEST_CODE_SETTINGS = 100
+        // ===== 修改结束: 添加请求码常量 =====
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -218,11 +232,21 @@ class HomeActivity : AppCompatActivity() {
      * 点击后跳转到设置页面
      */
     private fun setupSettingsButton() {
+        // ===== 修改开始: 使用 startActivityForResult =====
+        // 修改日期: 2025-12-09
+        // 修改原因: 需要监听 SettingsActivity 的返回结果
+        // 修改内容: 将 startActivity 改为 startActivityForResult
         findViewById<ImageButton>(R.id.btn_settings)?.setOnClickListener {
             Log.d(TAG, "Settings button clicked")
             val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+
+            // *** 修改前: startActivity(intent) ***
+            // *** 修改后: startActivityForResult(intent, REQUEST_CODE_SETTINGS) ***
+            startActivityForResult(intent, REQUEST_CODE_SETTINGS)
+
+            Log.d(TAG, "Started SettingsActivity with request code: $REQUEST_CODE_SETTINGS")
         }
+        // ===== 修改结束: 使用 startActivityForResult =====
     }
 
     /**
@@ -334,6 +358,44 @@ class HomeActivity : AppCompatActivity() {
 
         Log.d(TAG, "=== Test Complete ===")
     }
+
+    // ===== 修改开始: 添加 onActivityResult 方法 =====
+    // 修改日期: 2025-12-09
+    // 修改原因: 监听 SettingsActivity 返回结果,如果设置更改则重新创建 Activity
+    // 修改内容: 新增完整的 onActivityResult 方法
+    /**
+     * 处理 Activity 返回结果
+     * 当从 SettingsActivity 返回且设置已更改时,重新创建当前 Activity
+     *
+     * @param requestCode 请求码
+     * @param resultCode 结果码
+     * @param data 返回的数据
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        Log.d(TAG, "onActivityResult called:")
+        Log.d(TAG, "  - requestCode: $requestCode")
+        Log.d(TAG, "  - resultCode: $resultCode")
+
+        // 检查是否是从 SettingsActivity 返回
+        if (requestCode == REQUEST_CODE_SETTINGS) {
+            // 检查设置是否已更改
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "Settings changed, recreating activity to apply changes")
+
+                // 重新创建 Activity 以应用新的语言和主题设置
+                // 这会触发:
+                // 1. onDestroy()
+                // 2. onCreate() - 会重新应用 applyTheme()
+                // 3. initializeComponents() - 会重新初始化 LanguageManager
+                recreate()
+            } else {
+                Log.d(TAG, "Settings not changed, no action needed")
+            }
+        }
+    }
+    // ===== 修改结束: 添加 onActivityResult 方法 =====
 
     override fun onResume() {
         super.onResume()
