@@ -1,56 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values/dimens.xml -->
-<!-- XML Resource File - Dimension Definitions -->
-
+<!-- XML Resource File - Dimension Resources -->
 <resources>
-    <!-- Spacing -->
-    <dimen name="spacing_tiny">4dp</dimen>
+    <!-- 间距 -->
     <dimen name="spacing_small">8dp</dimen>
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_xlarge">32dp</dimen>
 
-    <!-- Padding -->
-    <dimen name="padding_tiny">4dp</dimen>
-    <dimen name="padding_small">8dp</dimen>
-    <dimen name="padding_medium">16dp</dimen>
-    <dimen name="padding_large">24dp</dimen>
+    <!-- 文字大小 -->
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_xlarge">24sp</dimen>
+    <dimen name="text_size_headline">28sp</dimen>
 
-    <!-- Margin -->
-    <dimen name="margin_tiny">4dp</dimen>
-    <dimen name="margin_small">8dp</dimen>
-    <dimen name="margin_medium">16dp</dimen>
-    <dimen name="margin_large">24dp</dimen>
+    <!-- 按钮 -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_corner_radius">8dp</dimen>
 
-    <!-- Card -->
+    <!-- 键盘按钮 -->
+    <dimen name="keyboard_button_height">56dp</dimen>
+    <dimen name="keyboard_button_text_size">18sp</dimen>
+
+    <!-- 卡片 -->
     <dimen name="card_corner_radius">12dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
-
-    <!-- Button -->
-    <dimen name="button_corner_radius">8dp</dimen>
-    <dimen name="button_height">48dp</dimen>
-
-    <!-- Text Size -->
-    <dimen name="text_size_tiny">10sp</dimen>
-    <dimen name="text_size_small">12sp</dimen>
-    <dimen name="text_size_normal">14sp</dimen>
-    <dimen name="text_size_medium">16sp</dimen>
-    <dimen name="text_size_large">18sp</dimen>
-    <dimen name="text_size_xlarge">20sp</dimen>
-    <dimen name="text_size_headline">24sp</dimen>
-    <dimen name="text_size_title">32sp</dimen>
-
-    <!-- Icon Size -->
-    <dimen name="icon_size_small">16dp</dimen>
-    <dimen name="icon_size_medium">24dp</dimen>
-    <dimen name="icon_size_large">32dp</dimen>
-    <dimen name="icon_size_xlarge">48dp</dimen>
-
-    <!-- Module Card -->
-    <dimen name="module_card_height">120dp</dimen>
-    <dimen name="module_icon_size">48dp</dimen>
-
-    <!-- Step Item -->
-    <dimen name="step_item_padding">12dp</dimen>
-    <dimen name="step_indicator_size">24dp</dimen>
 </resources>

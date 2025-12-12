@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/layout/activity_home.xml -->
-<!-- 主界面布局 - 包含模块选择和计算功能 -->
+<!-- XML Layout File - Home Activity Layout -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,160 +8,63 @@
     android:layout_height="match_parent"
     android:background="@color/background_light">
 
-    <TextView
-        android:id="@+id/txt_app_title"
+    <!-- 顶部标题栏 -->
+    <LinearLayout
+        android:id="@+id/layout_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textSize="@dimen/text_size_headline"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary_light"
-        android:layout_margin="@dimen/spacing_medium"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_medium"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_settings" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/btn_settings"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_settings"
-        android:contentDescription="@string/settings"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_margin="@dimen/spacing_small"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <TextView
+            android:id="@+id/txt_app_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textSize="@dimen/text_size_headline"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary_light" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_settings"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:icon="@drawable/ic_settings"
+            app:iconGravity="textStart"
+            android:contentDescription="@string/settings" />
+
+    </LinearLayout>
+
+    <!-- 模块选择标题 -->
     <TextView
         android:id="@+id/txt_modules_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_module"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/text_primary_light"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
-        app:layout_constraintTop_toBottomOf="@id/txt_app_title"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintTop_toBottomOf="@id/layout_header"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- 模块列表 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_modules"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_small"
-        app:layout_constraintTop_toBottomOf="@id/txt_modules_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_medium"
-        app:layout_constraintTop_toBottomOf="@id/recycler_modules"
+        android:padding="@dimen/spacing_small"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/txt_modules_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_medium">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/input_expression"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary_light" />
-
-                    <EditText
-                        android:id="@+id/edit_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="@string/hint_expression"
-                        android:inputType="text"
-                        android:fontFamily="monospace" />
-
-                    <Button
-                        android:id="@+id/btn_calculate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="@string/btn_calculate" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/result"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary_light" />
-
-                    <TextView
-                        android:id="@+id/txt_result"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/result"
-                        android:textSize="@dimen/text_size_medium"
-                        android:fontFamily="monospace"
-                        android:textColor="@color/primary" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/steps"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@color/text_primary_light"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:layout_marginStart="@dimen/spacing_small" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_steps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-    </ScrollView>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

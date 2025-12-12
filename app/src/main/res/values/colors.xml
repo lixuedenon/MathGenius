@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values/colors.xml -->
-<!-- XML Resource File - Color Definitions -->
+<!-- XML Resource File - Color Resources -->
 <resources>
-    <!-- Primary Colors -->
+    <!-- 主色调 -->
     <color name="primary">#6200EE</color>
     <color name="primary_dark">#3700B3</color>
-    <color name="primary_variant">#3700B3</color>
+    <color name="primary_light">#BB86FC</color>
 
-    <!-- Secondary Colors -->
-    <color name="secondary">#03DAC5</color>
+    <!-- 次要色调 -->
+    <color name="secondary">#03DAC6</color>
     <color name="secondary_dark">#018786</color>
-    <color name="secondary_variant">#018786</color>
+    <color name="secondary_light">#66FFF9</color>
 
-    <!-- Background Colors - Light Mode -->
+    <!-- 强调色 -->
+    <color name="accent">#FF6B00</color>
+
+    <!-- 背景色 -->
     <color name="background_light">#FFFFFF</color>
-    <color name="surface_light">#FFFFFF</color>
-
-    <!-- Background Colors - Dark Mode -->
     <color name="background_dark">#121212</color>
+
+    <!-- 表面色 -->
+    <color name="surface_light">#FFFFFF</color>
     <color name="surface_dark">#1E1E1E</color>
 
-    <!-- Background Colors - Eye Care Mode -->
-    <color name="background_eye_care">#FFF8E1</color>
-    <color name="background_eyecare">#FFF8E1</color>
-    <color name="surface_eyecare">#FFFBF0</color>
+    <!-- 文字颜色 -->
+    <color name="text_primary_light">#000000</color>
+    <color name="text_secondary_light">#757575</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_dark">#B3B3B3</color>
 
-    <!-- Base Colors -->
+    <!-- 按钮颜色 -->
+    <color name="button_secondary">#E0E0E0</color>
+
+    <!-- 涟漪效果颜色 -->
+    <color name="ripple_color">#40FFFFFF</color>
+
+    <!-- 白色和黑色 -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
-    <!-- Text Colors - Light Mode -->
-    <color name="text_primary_light">#000000</color>
-    <color name="text_secondary_light">#757575</color>
+    <!-- 错误色 -->
+    <color name="error">#B00020</color>
 
-    <!-- Text Colors - Dark Mode -->
-    <color name="text_primary_dark">#FFFFFF</color>
-    <color name="text_secondary_dark">#B0B0B0</color>
-
-    <!-- Step Type Colors -->
-    <color name="step_identify">#6200EE</color>
-    <color name="step_apply_rule">#03DAC5</color>
-    <color name="step_simplify">#FF6F00</color>
-    <color name="step_result">#4CAF50</color>
-
-    <!-- Module Colors -->
-    <color name="module_calculus">#9C27B0</color>
-    <color name="module_linear_algebra">#3F51B5</color>
-    <color name="module_statistics">#009688</color>
-    <color name="module_diffeq">#FF6F00</color>
-    <color name="module_discrete">#7B1FA2</color>
+    <!-- 成功色 -->
+    <color name="success">#4CAF50</color>
 </resources>

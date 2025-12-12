@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values-zh/strings.xml -->
-<!-- 中文字符串资源 -->
+<!-- XML Resource File - String Resources (Chinese) -->
 <resources>
     <string name="app_name">数学天才</string>
 
@@ -12,6 +12,8 @@
 
     <string name="module_calculus">微积分</string>
     <string name="module_calculus_desc">导数、积分、极限</string>
+    <string name="module_calculus_derivative">导数计算</string>
+    <string name="module_calculus_integral">积分计算</string>
 
     <string name="module_linear_algebra">线性代数</string>
     <string name="module_linear_algebra_desc">矩阵、向量、特征值</string>
@@ -31,6 +33,13 @@
     <string name="btn_calculate">计算导数</string>
     <string name="result">结果</string>
     <string name="steps">步骤</string>
+
+    <!-- Labels -->
+    <string name="label_input_expression">输入表达式</string>
+    <string name="label_result">结果</string>
+    <string name="label_result_placeholder">结果将显示在这里</string>
+    <string name="label_steps">计算步骤</string>
+    <string name="label_steps_placeholder">详细步骤将显示在这里</string>
 
     <!-- 错误信息 -->
     <string name="error_empty_input">请输入表达式</string>
@@ -65,4 +74,68 @@
     <string name="step_title_apply_rule">应用规则</string>
     <string name="step_title_simplify">化简</string>
     <string name="step_title_result">结果</string>
+
+    <!-- Step Explanations -->
+    <string name="step_identify">识别表达式类型</string>
+    <string name="step_result">最终结果</string>
+    <string name="step_simplify">化简表达式</string>
+    <string name="step_simplify_expression">化简: %1$s</string>
+    <string name="step_apply_rule">应用规则: %1$s</string>
+    <string name="step_apply_chain_rule">应用链式法则</string>
+    <string name="step_apply_power_rule">应用幂法则</string>
+    <string name="step_apply_product_rule">应用乘积法则</string>
+
+    <!-- 按钮 -->
+    <string name="btn_clear">清除</string>
+    <string name="btn_copy">复制</string>
+    <string name="btn_backspace">←</string>
+
+    <!-- 错误信息 -->
+    <string name="error_calculation_failed">计算失败</string>
+    <string name="error_empty_expression">请输入表达式</string>
+    <string name="error_invalid_expression">无效表达式</string>
+    <string name="error_parse">解析错误</string>
+    <string name="error_unknown">未知错误</string>
+
+    <!-- 提示 -->
+    <string name="hint_enter_expression">输入表达式</string>
+
+    <!-- Calculator Keyboard -->
+    <string name="keyboard_display_hint">输入表达式</string>
+    <string name="keyboard_clear">清除</string>
+    <string name="keyboard_confirm_calculate">计算</string>
+    <string name="keyboard_power_title">输入指数</string>
+    <string name="keyboard_power_hint">例如: 3</string>
+    <string name="keyboard_confirm">确认</string>
+    <string name="keyboard_cancel">取消</string>
+    <string name="keyboard_confirm_title">确认表达式</string>
+    <string name="keyboard_confirm_message">对以下表达式求导:\n\n%1$s</string>
+
+    <!-- Input Mode -->
+    <string name="input_mode_keyboard">键盘输入</string>
+    <string name="input_mode_text">文本输入</string>
+    <string name="btn_switch_mode">切换输入</string>
+
+    <!-- Calculus Activity -->
+    <string name="btn_calculate_derivative">计算导数 (∂/∂x)</string>
+    <string name="btn_calculate_integral">计算积分 (∫ dx)</string>
+    <string name="confirm_derivative_title">确认求导</string>
+    <string name="confirm_derivative_message">对以下表达式求导:\n\n%1$s</string>
+    <string name="confirm_integral_title">确认积分</string>
+    <string name="confirm_integral_message">对以下表达式积分:\n\n%1$s</string>
+
+    <!-- Derivative Rules -->
+    <string name="rule_chain">链式法则</string>
+    <string name="rule_constant">常数规则</string>
+    <string name="rule_constant_multiple">常数倍法则</string>
+    <string name="rule_cos">余弦导数</string>
+    <string name="rule_exp">指数导数</string>
+    <string name="rule_ln">对数导数</string>
+    <string name="rule_power">幂法则</string>
+    <string name="rule_product">乘积法则</string>
+    <string name="rule_quotient">商法则</string>
+    <string name="rule_sin">正弦导数</string>
+    <string name="rule_sum">和差法则</string>
+    <string name="rule_tan">正切导数</string>
+    <string name="rule_variable">变量规则</string>
 </resources>

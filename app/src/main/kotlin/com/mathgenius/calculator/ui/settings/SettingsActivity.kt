@@ -6,7 +6,9 @@
 package com.mathgenius.calculator.ui.settings
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
+import java.util.Locale
 import android.util.Log
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -47,6 +49,29 @@ class SettingsActivity : AppCompatActivity() {
         const val THEME_DARK = "dark"
         const val THEME_EYE_CARE = "eye_care"
     }
+
+    // ===== 新增开始: 应用语言配置到 Activity Context =====
+    // 修改日期: 2025-12-10
+    // 修改原因: 语言更改后 recreate() 不生效,需要在 Activity 创建时应用语言配置
+    // 修改内容: 覆盖 attachBaseContext() 方法,在 Activity 创建前应用语言配置
+    override fun attachBaseContext(newBase: Context) {
+        // 从 SharedPreferences 加载当前语言
+        val language = LanguageManager.loadLanguagePreference(newBase)
+
+        // 创建带语言配置的 Context
+        val locale = Locale(language.code)
+        Locale.setDefault(locale)
+
+        val configuration = Configuration(newBase.resources.configuration)
+        configuration.setLocale(locale)
+
+        val localizedContext = newBase.createConfigurationContext(configuration)
+
+        Log.d(TAG, "attachBaseContext: Applied language=${language.name} (${language.code})")
+
+        super.attachBaseContext(localizedContext)
+    }
+    // ===== 新增结束: 应用语言配置到 Activity Context =====
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // 在 setContentView 之前应用主题

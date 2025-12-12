@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values/strings.xml -->
-<!-- 英语字符串资源 -->
+<!-- XML Resource File - String Resources (English) -->
 <resources>
     <string name="app_name">MathGenius</string>
 
@@ -12,6 +12,8 @@
 
     <string name="module_calculus">Calculus</string>
     <string name="module_calculus_desc">Derivatives, Integrals, Limits</string>
+    <string name="module_calculus_derivative">Derivative Calculation</string>
+    <string name="module_calculus_integral">Integral Calculation</string>
 
     <string name="module_linear_algebra">Linear Algebra</string>
     <string name="module_linear_algebra_desc">Matrices, Vectors, Eigenvalues</string>
@@ -31,6 +33,13 @@
     <string name="btn_calculate">Calculate Derivative</string>
     <string name="result">Result</string>
     <string name="steps">Steps</string>
+
+    <!-- Labels -->
+    <string name="label_input_expression">Input Expression</string>
+    <string name="label_result">Result</string>
+    <string name="label_result_placeholder">Result will be displayed here</string>
+    <string name="label_steps">Calculation Steps</string>
+    <string name="label_steps_placeholder">Detailed steps will be displayed here</string>
 
     <!-- 错误信息 -->
     <string name="error_empty_input">Please enter an expression</string>
@@ -66,9 +75,20 @@
     <string name="step_title_simplify">Simplify</string>
     <string name="step_title_result">Result</string>
 
+    <!-- Step Explanations -->
+    <string name="step_identify">Identify expression type</string>
+    <string name="step_result">Final result</string>
+    <string name="step_simplify">Simplify expression</string>
+    <string name="step_simplify_expression">Simplifying: %1$s</string>
+    <string name="step_apply_rule">Apply rule: %1$s</string>
+    <string name="step_apply_chain_rule">Apply chain rule</string>
+    <string name="step_apply_power_rule">Apply power rule</string>
+    <string name="step_apply_product_rule">Apply product rule</string>
+
     <!-- 按钮 -->
     <string name="btn_clear">Clear</string>
     <string name="btn_copy">Copy</string>
+    <string name="btn_backspace">←</string>
 
     <!-- 错误信息 -->
     <string name="error_calculation_failed">Calculation failed</string>
@@ -79,4 +99,43 @@
 
     <!-- 提示 -->
     <string name="hint_enter_expression">Enter expression</string>
+
+    <!-- Calculator Keyboard -->
+    <string name="keyboard_display_hint">Enter expression</string>
+    <string name="keyboard_clear">Clear</string>
+    <string name="keyboard_confirm_calculate">Calculate</string>
+    <string name="keyboard_power_title">Enter Exponent</string>
+    <string name="keyboard_power_hint">e.g., 3</string>
+    <string name="keyboard_confirm">Confirm</string>
+    <string name="keyboard_cancel">Cancel</string>
+    <string name="keyboard_confirm_title">Confirm Expression</string>
+    <string name="keyboard_confirm_message">Calculate derivative of:\n\n%1$s</string>
+
+    <!-- Input Mode -->
+    <string name="input_mode_keyboard">Keyboard</string>
+    <string name="input_mode_text">Text</string>
+    <string name="btn_switch_mode">Switch Input</string>
+
+    <!-- Calculus Activity -->
+    <string name="btn_calculate_derivative">Calculate Derivative (∂/∂x)</string>
+    <string name="btn_calculate_integral">Calculate Integral (∫ dx)</string>
+    <string name="confirm_derivative_title">Confirm Derivative</string>
+    <string name="confirm_derivative_message">Calculate derivative of:\n\n%1$s</string>
+    <string name="confirm_integral_title">Confirm Integral</string>
+    <string name="confirm_integral_message">Calculate integral of:\n\n%1$s</string>
+
+    <!-- Derivative Rules -->
+    <string name="rule_chain">Chain Rule</string>
+    <string name="rule_constant">Constant Rule</string>
+    <string name="rule_constant_multiple">Constant Multiple Rule</string>
+    <string name="rule_cos">Cosine Derivative</string>
+    <string name="rule_exp">Exponential Derivative</string>
+    <string name="rule_ln">Logarithm Derivative</string>
+    <string name="rule_power">Power Rule</string>
+    <string name="rule_product">Product Rule</string>
+    <string name="rule_quotient">Quotient Rule</string>
+    <string name="rule_sin">Sine Derivative</string>
+    <string name="rule_sum">Sum Rule</string>
+    <string name="rule_tan">Tangent Derivative</string>
+    <string name="rule_variable">Variable Rule</string>
 </resources>

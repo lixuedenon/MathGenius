@@ -1,404 +1,164 @@
 // app/src/main/kotlin/com/mathgenius/calculator/ui/home/HomeActivity.kt
-// 主界面 Activity - 已修复设置切换不生效问题
-// 修改日期: 2025-12-09
-// 修改内容:
-//   1. 添加 REQUEST_CODE_SETTINGS 常量
-//   2. 修改 setupSettingsButton() 使用 startActivityForResult
-//   3. 添加 onActivityResult() 方法监听设置变化并重新创建 Activity
+// Kotlin Source File
 
 package com.mathgenius.calculator.ui.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ScrollView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.mathgenius.calculator.R
 import com.mathgenius.calculator.core.i18n.LanguageManager
-import com.mathgenius.calculator.core.steps.CalculationStep
-import com.mathgenius.calculator.modules.calculus.derivative.DerivativeEngine
-import com.mathgenius.calculator.ui.common.StepsAdapter
+import com.mathgenius.calculator.ui.calculus.CalculusActivity
 import com.mathgenius.calculator.ui.settings.SettingsActivity
 
 /**
- * 主界面 Activity
- * 显示模块选择和微分计算功能
+ * 主页面 Activity
+ *
+ * 功能：
+ * - 显示所有可用的数学模块
+ * - 支持模块选择和跳转
+ * - 提供设置入口
+ *
+ * 架构：
+ * - 纯模块展示页面
+ * - 不包含计算功能
+ * - 作为应用入口和导航中心
  */
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var languageManager: LanguageManager
-    private lateinit var derivativeEngine: DerivativeEngine
-
     private lateinit var recyclerModules: RecyclerView
-    private lateinit var moduleAdapter: ModuleAdapter
-    private lateinit var editInput: EditText
-    private lateinit var btnCalculate: Button
-    private lateinit var txtResult: TextView
-    private lateinit var recyclerSteps: RecyclerView
-    private lateinit var scrollView: ScrollView
+    private lateinit var btnSettings: MaterialButton
 
-    private var currentSteps: List<CalculationStep> = emptyList()
+    /**
+     * 数学模块数据类
+     */
+    data class MathModule(
+        val id: String,
+        val nameResId: Int,
+        val descResId: Int,
+        val iconResId: Int,
+        val enabled: Boolean = true
+    )
 
-    companion object {
-        private const val TAG = "HomeActivity"
+    /**
+     * 所有数学模块列表
+     */
+    private val modules = listOf(
+        MathModule(
+            id = "calculus",
+            nameResId = R.string.module_calculus,
+            descResId = R.string.module_calculus_desc,
+            iconResId = R.drawable.ic_calculus,
+            enabled = true
+        ),
+        MathModule(
+            id = "linear_algebra",
+            nameResId = R.string.module_linear_algebra,
+            descResId = R.string.module_linear_algebra_desc,
+            iconResId = R.drawable.ic_linear_algebra,
+            enabled = false
+        ),
+        MathModule(
+            id = "statistics",
+            nameResId = R.string.module_statistics,
+            descResId = R.string.module_statistics_desc,
+            iconResId = R.drawable.ic_statistics,
+            enabled = false
+        ),
+        MathModule(
+            id = "diff_eq",
+            nameResId = R.string.module_diff_eq,
+            descResId = R.string.module_diff_eq_desc,
+            iconResId = R.drawable.ic_diff_eq,
+            enabled = false
+        ),
+        MathModule(
+            id = "discrete",
+            nameResId = R.string.module_discrete,
+            descResId = R.string.module_discrete_desc,
+            iconResId = R.drawable.ic_discrete,
+            enabled = false
+        )
+    )
 
-        // ===== 修改开始: 添加请求码常量 =====
-        // 修改日期: 2025-12-09
-        // 修改原因: 需要识别从 SettingsActivity 返回的结果
-        // 修改内容: 添加 REQUEST_CODE_SETTINGS 常量
-        private const val REQUEST_CODE_SETTINGS = 100
-        // ===== 修改结束: 添加请求码常量 =====
+    override fun attachBaseContext(newBase: Context) {
+        val langManager = LanguageManager(newBase)
+        val context = langManager.applyLanguageToActivity(newBase)
+        super.attachBaseContext(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 应用保存的主题
-        applyTheme()
-
         setContentView(R.layout.activity_home)
 
-        Log.d(TAG, "=== HomeActivity onCreate ===")
-
-        initializeComponents()
-        initializeViews()
-        setupModuleList()
-        setupListeners()
-        setupSettingsButton()
-        testDerivativeEngine()
-
-        Log.d(TAG, "=== HomeActivity onCreate Complete ===")
-    }
-
-    /**
-     * 应用主题
-     */
-    private fun applyTheme() {
-        val prefs = getSharedPreferences("MathGeniusPrefs", MODE_PRIVATE)
-        val theme = prefs.getString("theme", "light") ?: "light"
-
-        when (theme) {
-            "light" -> setTheme(R.style.Theme_MathGenius_Light)
-            "dark" -> setTheme(R.style.Theme_MathGenius_Dark)
-            "eye_care" -> setTheme(R.style.Theme_MathGenius_EyeCare)
-        }
-
-        Log.d(TAG, "Applied theme: $theme")
-    }
-
-    /**
-     * 初始化核心组件
-     */
-    private fun initializeComponents() {
-        Log.d(TAG, "Initializing components...")
-
         languageManager = LanguageManager(this)
-        derivativeEngine = DerivativeEngine(languageManager)
 
-        Log.d(TAG, "Current language: ${languageManager.getCurrentLanguage()}")
+        initViews()
+        setupModulesList()
+        setupClickListeners()
     }
 
     /**
-     * 初始化视图组件
+     * 初始化视图
      */
-    private fun initializeViews() {
-        Log.d(TAG, "Initializing views...")
-
-        try {
-            recyclerModules = findViewById(R.id.recycler_modules)
-            editInput = findViewById(R.id.edit_input)
-            btnCalculate = findViewById(R.id.btn_calculate)
-            txtResult = findViewById(R.id.txt_result)
-            recyclerSteps = findViewById(R.id.recycler_steps)
-            scrollView = findViewById(R.id.scroll_view)
-
-            Log.d(TAG, "All views initialized successfully")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error initializing views", e)
-            Toast.makeText(this, "Error initializing UI: ${e.message}", Toast.LENGTH_LONG).show()
-        }
+    private fun initViews() {
+        recyclerModules = findViewById(R.id.recycler_modules)
+        btnSettings = findViewById(R.id.btn_settings)
     }
 
     /**
      * 设置模块列表
-     * 定义所有数学模块并配置 RecyclerView
      */
-    private fun setupModuleList() {
-        Log.d(TAG, "Setting up module list...")
-
-        val modules = listOf(
-            ModuleData(
-                id = "calculus",
-                nameResId = R.string.module_calculus,
-                descriptionResId = R.string.module_calculus_desc,
-                iconResId = R.drawable.ic_calculate,
-                colorResId = R.color.module_calculus,
-                isAvailable = true
-            ),
-            ModuleData(
-                id = "linear_algebra",
-                nameResId = R.string.module_linear_algebra,
-                descriptionResId = R.string.module_linear_algebra_desc,
-                iconResId = R.drawable.ic_calculate,
-                colorResId = R.color.module_linear_algebra,
-                isAvailable = false
-            ),
-            ModuleData(
-                id = "statistics",
-                nameResId = R.string.module_statistics,
-                descriptionResId = R.string.module_statistics_desc,
-                iconResId = R.drawable.ic_calculate,
-                colorResId = R.color.module_statistics,
-                isAvailable = false
-            ),
-            ModuleData(
-                id = "diffeq",
-                nameResId = R.string.module_diff_eq,
-                descriptionResId = R.string.module_diff_eq_desc,
-                iconResId = R.drawable.ic_calculate,
-                colorResId = R.color.module_diffeq,
-                isAvailable = false
-            ),
-            ModuleData(
-                id = "discrete",
-                nameResId = R.string.module_discrete,
-                descriptionResId = R.string.module_discrete_desc,
-                iconResId = R.drawable.ic_calculate,
-                colorResId = R.color.module_discrete,
-                isAvailable = false
-            )
-        )
-
-        moduleAdapter = ModuleAdapter(modules) { module ->
-            handleModuleClick(module)
-        }
-
-        recyclerModules.adapter = moduleAdapter
-        recyclerModules.layoutManager = LinearLayoutManager(this)
-
-        Log.d(TAG, "Module list setup complete")
-    }
-
-    /**
-     * 处理模块点击事件
-     *
-     * @param module 被点击的模块数据
-     */
-    private fun handleModuleClick(module: ModuleData) {
-        Log.d(TAG, "Module clicked: ${module.id}")
-
-        when (module.id) {
-            "calculus" -> {
-                Log.d(TAG, "Scrolling to input area")
-                scrollView.post {
-                    scrollView.smoothScrollTo(0, editInput.top)
-                }
-                editInput.requestFocus()
-            }
-            else -> {
-                Toast.makeText(
-                    this,
-                    R.string.module_coming_soon,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private fun setupModulesList() {
+        recyclerModules.layoutManager = GridLayoutManager(this, 2)
+        recyclerModules.adapter = ModulesAdapter(modules) { module ->
+            onModuleClicked(module)
         }
     }
 
     /**
-     * 设置事件监听器
+     * 设置点击监听
      */
-    private fun setupListeners() {
-        Log.d(TAG, "Setting up listeners...")
-
-        btnCalculate.setOnClickListener {
-            Log.d(TAG, "Calculate button clicked!")
-            calculateDerivative()
+    private fun setupClickListeners() {
+        btnSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
-
-        Log.d(TAG, "Listeners setup complete")
     }
 
     /**
-     * 设置设置按钮
-     * 点击后跳转到设置页面
+     * 模块点击处理
      */
-    private fun setupSettingsButton() {
-        // ===== 修改开始: 使用 startActivityForResult =====
-        // 修改日期: 2025-12-09
-        // 修改原因: 需要监听 SettingsActivity 的返回结果
-        // 修改内容: 将 startActivity 改为 startActivityForResult
-        findViewById<ImageButton>(R.id.btn_settings)?.setOnClickListener {
-            Log.d(TAG, "Settings button clicked")
-            val intent = Intent(this, SettingsActivity::class.java)
-
-            // *** 修改前: startActivity(intent) ***
-            // *** 修改后: startActivityForResult(intent, REQUEST_CODE_SETTINGS) ***
-            startActivityForResult(intent, REQUEST_CODE_SETTINGS)
-
-            Log.d(TAG, "Started SettingsActivity with request code: $REQUEST_CODE_SETTINGS")
-        }
-        // ===== 修改结束: 使用 startActivityForResult =====
-    }
-
-    /**
-     * 计算导数
-     * 获取输入表达式，调用微分引擎计算，并显示结果和步骤
-     */
-    private fun calculateDerivative() {
-        val input = editInput.text.toString().trim()
-
-        Log.d(TAG, "=== Calculate Derivative ===")
-        Log.d(TAG, "Input: '$input'")
-
-        if (input.isEmpty()) {
-            val errorMsg = languageManager.getString("error_empty_input")
-            Log.w(TAG, "Empty input, showing error: $errorMsg")
-            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+    private fun onModuleClicked(module: MathModule) {
+        if (!module.enabled) {
+            android.widget.Toast.makeText(
+                this,
+                R.string.module_coming_soon,
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
-        try {
-            Log.d(TAG, "Calling derivative engine...")
-            val result = derivativeEngine.compute(input)
-
-            Log.d(TAG, "Calculation result:")
-            Log.d(TAG, "  - Success: ${result.success}")
-            Log.d(TAG, "  - Result: ${result.formattedResult}")
-            Log.d(TAG, "  - Steps: ${result.steps.size}")
-
-            if (result.success) {
-                // 显示结果
-                val resultLabel = languageManager.getString("result")
-                val resultText = "$resultLabel: ${result.formattedResult}"
-                txtResult.text = resultText
-
-                Log.d(TAG, "Result text set to: $resultText")
-
-                // 显示步骤
-                currentSteps = result.steps
-                displaySteps(result.steps)
-
-                Log.d(TAG, "Calculation successful: ${result.formattedResult}")
-            } else {
-                // 显示错误
-                val errorMsg = result.errorMessage ?: "Unknown error"
-                Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
-                Log.e(TAG, "Calculation failed: $errorMsg")
+        when (module.id) {
+            "calculus" -> {
+                startActivity(Intent(this, CalculusActivity::class.java))
             }
-
-        } catch (e: Exception) {
-            val errorLabel = languageManager.getString("error_calculation")
-            val errorMsg = "$errorLabel: ${e.message}"
-
-            Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
-            Log.e(TAG, "Calculation error", e)
-        }
-    }
-
-    /**
-     * 显示计算步骤
-     * 使用 RecyclerView 和 StepsAdapter 显示步骤列表
-     *
-     * @param steps 计算步骤列表
-     */
-    private fun displaySteps(steps: List<CalculationStep>) {
-        Log.d(TAG, "Displaying ${steps.size} steps")
-
-        if (steps.isNotEmpty()) {
-            val adapter = StepsAdapter(steps, languageManager)
-            recyclerSteps.adapter = adapter
-            recyclerSteps.layoutManager = LinearLayoutManager(this)
-            recyclerSteps.visibility = View.VISIBLE
-
-            Log.d(TAG, "Steps displayed successfully")
-        } else {
-            recyclerSteps.visibility = View.GONE
-            Log.d(TAG, "No steps to display")
-        }
-    }
-
-    /**
-     * 测试微分引擎
-     * 在应用启动时运行一系列测试用例并输出日志
-     */
-    private fun testDerivativeEngine() {
-        Log.d(TAG, "=== Testing Derivative Engine ===")
-
-        val testCases = listOf(
-            "x^2",
-            "2*x + 1",
-            "x^3 + 2*x^2 + x",
-            "sin(x)",
-            "x^2 * cos(x)",
-            "ln(x)",
-            "exp(x)",
-            "tan(x)"
-        )
-
-        testCases.forEach { expr ->
-            try {
-                val result = derivativeEngine.compute(expr)
-                Log.d(TAG, "Input: $expr")
-                Log.d(TAG, "Output: ${result.formattedResult}")
-                Log.d(TAG, "Steps: ${result.steps.size}")
-                Log.d(TAG, "---")
-            } catch (e: Exception) {
-                Log.e(TAG, "Test failed for: $expr", e)
+            "linear_algebra" -> {
+                // TODO: 实现线性代数模块
+            }
+            "statistics" -> {
+                // TODO: 实现统计学模块
+            }
+            "diff_eq" -> {
+                // TODO: 实现微分方程模块
+            }
+            "discrete" -> {
+                // TODO: 实现离散数学模块
             }
         }
-
-        Log.d(TAG, "=== Test Complete ===")
-    }
-
-    // ===== 修改开始: 添加 onActivityResult 方法 =====
-    // 修改日期: 2025-12-09
-    // 修改原因: 监听 SettingsActivity 返回结果,如果设置更改则重新创建 Activity
-    // 修改内容: 新增完整的 onActivityResult 方法
-    /**
-     * 处理 Activity 返回结果
-     * 当从 SettingsActivity 返回且设置已更改时,重新创建当前 Activity
-     *
-     * @param requestCode 请求码
-     * @param resultCode 结果码
-     * @param data 返回的数据
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        Log.d(TAG, "onActivityResult called:")
-        Log.d(TAG, "  - requestCode: $requestCode")
-        Log.d(TAG, "  - resultCode: $resultCode")
-
-        // 检查是否是从 SettingsActivity 返回
-        if (requestCode == REQUEST_CODE_SETTINGS) {
-            // 检查设置是否已更改
-            if (resultCode == RESULT_OK) {
-                Log.d(TAG, "Settings changed, recreating activity to apply changes")
-
-                // 重新创建 Activity 以应用新的语言和主题设置
-                // 这会触发:
-                // 1. onDestroy()
-                // 2. onCreate() - 会重新应用 applyTheme()
-                // 3. initializeComponents() - 会重新初始化 LanguageManager
-                recreate()
-            } else {
-                Log.d(TAG, "Settings not changed, no action needed")
-            }
-        }
-    }
-    // ===== 修改结束: 添加 onActivityResult 方法 =====
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume - Current language: ${languageManager.getCurrentLanguage()}")
     }
 }
