@@ -27,6 +27,20 @@
             android:parentActivityName=".ui.home.HomeActivity"
             android:exported="false" />
 
+        <!-- Calculus Activity -->
+                <activity
+                    android:name=".ui.calculus.CalculusActivity"
+                    android:label="@string/module_calculus"
+                    android:parentActivityName=".ui.home.HomeActivity"
+                    android:screenOrientation="portrait" />
+
+                <!-- Result Activity -->
+                <activity
+                    android:name=".ui.result.ResultActivity"
+                    android:label="@string/result"
+                    android:parentActivityName=".ui.calculus.CalculusActivity"
+                    android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

@@ -1,92 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/layout/item_step.xml -->
-<!-- Layout XML - Calculation Step Item for RecyclerView -->
+<!-- XML Layout File - Calculation Step Item Layout -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_small"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="@dimen/spacing_small"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="@dimen/spacing_medium">
 
+        <!-- Step Number -->
+        <TextView
+            android:id="@+id/tv_step_number"
+            android:layout_width="@dimen/step_number_size"
+            android:layout_height="@dimen/step_number_size"
+            android:gravity="center"
+            android:background="@drawable/bg_step_number"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_medium" />
+
+        <!-- Step Content -->
         <LinearLayout
-            android:id="@+id/layout_main_step"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/spacing_medium">
 
             <TextView
-                android:id="@+id/txt_step_number"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:background="@drawable/bg_step_number"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/tv_step_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_medium"
-                android:orientation="vertical">
+                android:textStyle="bold"
+                android:textColor="@color/text_primary_light"
+                android:textSize="@dimen/text_size_normal" />
 
-                <TextView
-                    android:id="@+id/txt_step_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textColor="@color/text_primary_light" />
+            <TextView
+                android:id="@+id/tv_step_expression"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xsmall"
+                android:fontFamily="monospace"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_size_medium" />
 
-                <TextView
-                    android:id="@+id/txt_step_explanation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="@dimen/text_size_normal"
-                    android:textColor="@color/text_secondary_light" />
-
-                <TextView
-                    android:id="@+id/txt_step_expression"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="monospace"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textColor="@color/primary" />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/img_expand"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_expand_more"
-                android:contentDescription="@string/expand"
+            <TextView
+                android:id="@+id/tv_step_explanation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textColor="@color/text_secondary_light"
+                android:textSize="@dimen/text_size_normal"
                 android:visibility="gone" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layout_substeps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="@dimen/spacing_small"
+        <!-- Expand Icon -->
+        <ImageView
+            android:id="@+id/iv_expand_icon"
+            android:layout_width="@dimen/step_icon_size"
+            android:layout_height="@dimen/step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_expand_more"
+            android:contentDescription="@string/expand"
             android:visibility="gone" />
 
     </LinearLayout>

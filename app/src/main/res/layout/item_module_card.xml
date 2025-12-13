@@ -1,64 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/layout/item_module_card.xml -->
-<!-- Layout XML - Module Card Item for RecyclerView -->
+<!-- XML Layout File - Module Card Item Layout -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_module"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/module_card_height"
     android:layout_margin="@dimen/spacing_small"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing_medium"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="@dimen/spacing_medium">
 
         <ImageView
-            android:id="@+id/img_module_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerInside"
-            android:contentDescription="@string/module_icon" />
+            android:id="@+id/iv_module_icon"
+            android:layout_width="@dimen/module_icon_size"
+            android:layout_height="@dimen/module_icon_size"
+            android:contentDescription="@string/module_icon"
+            app:tint="@color/primary" />
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tv_module_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="@dimen/spacing_medium"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/text_primary_light"
+            android:gravity="center" />
 
-            <TextView
-                android:id="@+id/txt_module_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_medium"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary_light" />
-
-            <TextView
-                android:id="@+id/txt_module_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_normal"
-                android:textColor="@color/text_secondary_light"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/img_arrow"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_arrow_forward"
-            android:contentDescription="@string/navigate" />
+        <TextView
+            android:id="@+id/tv_module_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xsmall"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/text_secondary_light"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end" />
 
     </LinearLayout>
 

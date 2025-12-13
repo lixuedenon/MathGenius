@@ -138,4 +138,8 @@
     <string name="rule_sum">Sum Rule</string>
     <string name="rule_tan">Tangent Derivative</string>
     <string name="rule_variable">Variable Rule</string>
+
+    <!-- Result Activity -->
+        <string name="error">Error</string>
+        <string name="calculation_complete">Calculation completed in %1$d ms</string>
 </resources>

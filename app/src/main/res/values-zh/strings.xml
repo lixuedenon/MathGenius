@@ -138,4 +138,8 @@
     <string name="rule_sum">和差法则</string>
     <string name="rule_tan">正切导数</string>
     <string name="rule_variable">变量规则</string>
+
+    <!-- Result Activity -->
+        <string name="error">错误</string>
+        <string name="calculation_complete">计算完成，用时 %1$d 毫秒</string>
 </resources>

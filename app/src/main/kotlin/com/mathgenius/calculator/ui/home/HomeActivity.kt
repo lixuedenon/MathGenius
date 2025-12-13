@@ -3,7 +3,6 @@
 
 package com.mathgenius.calculator.ui.home
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -85,12 +84,6 @@ class HomeActivity : AppCompatActivity() {
             enabled = false
         )
     )
-
-    override fun attachBaseContext(newBase: Context) {
-        val langManager = LanguageManager(newBase)
-        val context = langManager.applyLanguageToActivity(newBase)
-        super.attachBaseContext(context)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -114,12 +114,6 @@ class CalculusActivity : AppCompatActivity() {
         KeyButton("π", KeyType.CONSTANT)
     )
 
-    override fun attachBaseContext(newBase: Context) {
-        val langManager = LanguageManager(newBase)
-        val context = langManager.applyLanguageToActivity(newBase)
-        super.attachBaseContext(context)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calculus)
